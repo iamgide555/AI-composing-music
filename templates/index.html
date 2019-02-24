@@ -1,0 +1,14 @@
+<html>
+    <title>Tester 5</title>
+    <head>Test</head>
+    <form action = "http://localhost:5000/genSong" method = "post">
+        <p>Enter First Notes : <input type = "text" name = "firstNote" /></p>
+        {% if check == 1 %}
+            <p>please enter the correct Note</p>
+        {% endif %}
+        <input type="radio" name="mood" value="Happy" checked> Happy<br>
+        <input type="radio" name="mood" value="Sad"> Sad<br>
+        <input type="radio" name="mood" value="Relax"> Relax
+        <p><input type = "submit" value = "submit" /></p>
+    </form>
+</html>
