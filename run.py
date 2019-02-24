@@ -7,15 +7,12 @@ data = {
     "mood": None
 }
 
+print("test")
 app = Flask(__name__)
-
 @app.route('/')
 def index():
     return render_template("index.html",check = check)
 
-@app.route('/check')
-def check(data):
-    return 
 
 @app.route('/genSong',methods = ['POST', 'GET'])
 def genSong():
