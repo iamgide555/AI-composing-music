@@ -7,7 +7,7 @@ data = {
     "mood": None
 }
 
-print("test")
+
 app = Flask(__name__)
 @app.route('/')
 def index():
