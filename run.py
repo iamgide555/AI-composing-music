@@ -27,6 +27,7 @@ def genSong():
         firstNote = request.args.get('firstNote')
         mood = request.args.get('mood')
         return url_for('check',data = {"FirstNote": firstNote, "Mood": mood})
-
+        
 if __name__ == '__main__':
-   app.run(debug = True)
+    print("Server running!!")
+    app.run(debug = True)
