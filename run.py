@@ -3,10 +3,10 @@ from keras.models import load_model
 from keras import backend
 check = 0
 
-data = {
-    "firstNote": None,
-    "mood": None
-}
+#model
+Hmodel = None
+Smodel = None
+Rmodel = None
 
 # Init perplexity function
 def perplexity(y_true, y_pred):
@@ -18,6 +18,7 @@ def loadModel():
     Hmodel = load_model('Fmodel_happy.h5',custom_objects={'perplexity': perplexity})
     Smodel = load_model('Fmodel_sad.h5',custom_objects={'perplexity': perplexity})
     Rmodel = load_model('Fmodel_relax.h5',custom_objects={'perplexity': perplexity})
+    return Hmodel,Smodel,Rmodel
 
 
 app = Flask(__name__)
@@ -43,5 +44,5 @@ def genSong():
         
 if __name__ == '__main__':
     print("Server running!!")
-    loadModel()
+    Hmodel,Smodel,Rmodel = loadModel()
     app.run(debug = True)
