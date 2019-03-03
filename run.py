@@ -25,82 +25,6 @@ Rnetwork = None
 Hdict = None
 Sdict = None
 Rdict = None
-#model
-Hmodel = None
-Smodel = None
-Rmodel = None
-
-#Note data in json file format
-happyJson = None
-sadJson = None
-relaxJson = None
-
-#networkInputdata
-Hnetwork = None
-Snetwork = None
-Rnetwork = None
-
-#Dict for each moods
-Hdict = None
-Sdict = None
-Rdict = None
-#model
-Hmodel = None
-Smodel = None
-Rmodel = None
-
-#Note data in json file format
-happyJson = None
-sadJson = None
-relaxJson = None
-
-#networkInputdata
-Hnetwork = None
-Snetwork = None
-Rnetwork = None
-
-#Dict for each moods
-Hdict = None
-Sdict = None
-Rdict = None
-#model
-Hmodel = None
-Smodel = None
-Rmodel = None
-
-#Note data in json file format
-happyJson = None
-sadJson = None
-relaxJson = None
-
-#networkInputdata
-Hnetwork = None
-Snetwork = None
-Rnetwork = None
-
-#Dict for each moods
-Hdict = None
-Sdict = None
-Rdict = None
-#model
-Hmodel = None
-Smodel = None
-Rmodel = None
-
-#Note data in json file format
-happyJson = None
-sadJson = None
-relaxJson = None
-
-#networkInputdata
-Hnetwork = None
-Snetwork = None
-Rnetwork = None
-
-#Dict for each moods
-Hdict = None
-Sdict = None
-Rdict = None
 
 def loadModel_jsonNote():
     # Init perplexity function
@@ -149,7 +73,7 @@ def loadModel_jsonNote():
         Snetwork.append(z)
     with open("./networkInput/Rnetwork.txt", 'r') as f:
         data = f.read()
-    f.close()
+    f.close
     data1 = data.split("|")
     Rnetwork = []
     for x in range(len(data1)-2):
