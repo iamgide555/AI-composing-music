@@ -1,10 +1,14 @@
 from flask import Flask, redirect, url_for, request, render_template, jsonify
 from keras.models import load_model
 from keras import backend
+import tensorflow as tf
 import numpy
 import json
 import random
+
 check = 0
+
+graph = tf.get_default_graph()
 
 #model
 Hmodel = None
@@ -122,49 +126,63 @@ def getNetworkInput(note, mood):
         for x in range(len(happyJson)):
             if happyJson[x]["note"] == note:
                 firstNote_number.append(happyJson[x]["num"])
+        print("All number: ",firstNote_number)
         randomNote = firstNote_number[random.randint(0,len(firstNote_number))]
+        print("Random: ",randomNote)
         network_input = getInput(randomNote, Hnetwork)
     elif mood == "Sad":
         for x in range(len(sadJson)):
             if sadJson[x]["note"] == note:
                 firstNote_number.append(sadJson[x]["num"])
-        network_input = getInput(firstNote_number, Snetwork)
+        randomNote = firstNote_number[random.randint(0,len(firstNote_number))]
+        network_input = getInput(randomNote, Snetwork)
     elif mood == "Relax":
         for x in range(len(relaxJson)):
             if relaxJson[x]["note"] == note:
                 firstNote_number.append(relaxJson[x]["num"])
-        network_input = getInput(firstNote_number, Rnetwork)
-    return network_input
+        randomNote = firstNote_number[random.randint(0,len(firstNote_number))]
+        network_input = getInput(randomNote, Rnetwork)
+    return network_input, randomNote
 
-def generateSong(pattern,mood,my_dict2):
+def generateSong(firstNote,pattern,mood,my_dict2, firstIndexNote):
     predictOutput = None
-    def generator(model,pattern,jsonData):
-        prediction_output = []
-        for prediction_index in range (100):
-            prediction_input = numpy.reshape(pattern, (1, len(pattern), 1))
-            prediction = model.predict(prediction_input, verbose = 0)
-            print(prediction)
-            index=numpy.argmax(prediction,axis=1)
-            result = my_dict2[index[0]]
-            prediction_output.append(result)
-            result=numpy.asarray(result)
-            #print(result)
-            #print(index)
-            pattern = numpy.append(pattern,[index])
-            pattern = pattern[1:len(pattern)]
-        print(prediction_output)
-        return prediction_output
+    def generator(genPattern):
+        if mood == "Happy":
+            model1 = Hmodel
+        elif mood == "Sad":
+            model1 = Smodel
+        elif mood == "Relax":
+            model1 = Rmodel
+        global graph
+        with graph.as_default():
+            prediction_output = []
+            for x in my_dict2.keys():
+                if my_dict2[x][0] == firstNote:
+                    print("Hi")
+                    prediction_output.append(my_dict2[x])
+                    break
+            print("FirstNote : ",firstNote)
+            print("FirstIndex : ",firstIndexNote)
+            print("Note : ",prediction_output)
+            for prediction_index in range (100):
+                prediction_input = numpy.reshape(genPattern, (1, len(genPattern), 1))
+                prediction = model1.predict(prediction_input, verbose = 0)
+                index=numpy.argmax(prediction,axis=1)
+                result = my_dict2[index[0]]
+                prediction_output.append(result)
+                result=numpy.asarray(result)
+                genPattern = numpy.append(genPattern,[index])
+                genPattern = genPattern[1:len(genPattern)]
+            return prediction_output
     print("Start")
-    if mood == "Happy":
-        print("GetIn")
-        predictOutput = generator(Hmodel,pattern,happyJson)
-        print("fineshed")
-    elif mood == "Sad":
-        predictOutput = generator(Smodel,pattern,sadJson)
-    elif mood == "Relax":
-        predictOutput = generator(Rmodel,pattern,relaxJson)
+    predictOutput = generator(pattern)
     return predictOutput
-""" app = Flask(__name__)
+
+#Load everyData
+Hmodel, Smodel, Rmodel, happyJson, sadJson, relaxJson, Hnetwork, Snetwork, Rnetwork, Hdict, Sdict, Rdict = loadModel_jsonNote()
+print("Server Start!!!!")
+
+app = Flask(__name__)
 @app.route('/')
 def index():
     return render_template("index.html",check = check)
@@ -172,28 +190,49 @@ def index():
 
 @app.route('/genSong',methods = ['POST', 'GET'])
 def genSong():
+    allNote =  ["A1","A2","A3","A4","A5","A6","A7","A8",
+                "B1","B2","B3","B4","B5","B6","B7","B8",
+                "C1","C2","C3","C4","C5","C6","C7","C8",
+                "D1","D2","D3","D4","D5","D6","D7","D8",
+                "E1","E2","E3","E4","E5","E6","E7","E8",
+                "F1","F2","F3","F4","F5","F6","F7","F8",
+                "G1","G2","G3","G4","G5","G6","G7","G8"]
     if request.method == 'POST':
         firstNote = request.form['firstNote']
-        if firstNote not in ["A","B","C","D","E","F","G"]:
+        if firstNote not in allNote:
             check = 1
             return render_template("index.html",check = check)
         else:
             mood = request.form['mood']
-            network_input = getNetworkInput(firstNote)
-            return render_template("check.html",firstNote = firstNote,mood = mood)
-
-    else:
-        firstNote = request.args.get('firstNote')
-        mood = request.args.get('mood')
-        return url_for('check',data = {"FirstNote": firstNote, "Mood": mood})
+            print(firstNote)
+            print(mood)
+            if mood == "Happy":
+                dataDict = Hdict
+            elif mood == "Sad":
+                dataDict = Sdict
+            elif mood == "Relax":
+                dataDict = Rdict
+            pattern,firstIndexNote = getNetworkInput(firstNote,mood)
+            print("Len dict :",len(dataDict))
+            prediction_output = generateSong(firstNote,pattern,mood,dataDict, firstIndexNote)
+            return render_template("output.html",checkaa = prediction_output)
+            #return render_template("output.html",checkaa = test)
         
 if __name__ == '__main__':
-    print("Server running!!")
-    Hmodel, Smodel, Rmodel, happyJson, sadJson, relaxJson = loadModel_jsonNote()
-    app.run(debug = True) """
-Hmodel, Smodel, Rmodel, happyJson, sadJson, relaxJson, Hnetwork, Snetwork, Rnetwork, Hdict, Sdict, Rdict = loadModel_jsonNote()
-pattern = getNetworkInput("A4","Happy")
-prediction_output = generateSong(pattern,"Happy",Hdict)
-print(prediction_output)
+    #Hmodel, Smodel, Rmodel, happyJson, sadJson, relaxJson, Hnetwork, Snetwork, Rnetwork, Hdict, Sdict, Rdict = loadModel_jsonNote()
+    app.run(debug = True)
+
+# firstNote = "A5"
+# mood = "Relax"
+# pattern = getNetworkInput(firstNote,mood)
+# if mood == "Happy":
+#     dataDict = Hdict
+# elif mood == "Sad":
+#     dataDict = Sdict
+# elif mood == "Relax":
+#     dataDict = Rdict
+# print(len(pattern))
+# prediction_output = generateSong(pattern,mood,dataDict)
+# print(prediction_output)
 #print(network_input)
 #print(len(network_input))
