@@ -1,4 +1,5 @@
 from flask import Flask, redirect, url_for, request, render_template, jsonify
+from flask_cors import CORS
 from keras.models import load_model
 from keras import backend
 import tensorflow as tf
@@ -182,11 +183,35 @@ def generateSong(firstNote,pattern,mood,my_dict2, firstIndexNote):
 Hmodel, Smodel, Rmodel, happyJson, sadJson, relaxJson, Hnetwork, Snetwork, Rnetwork, Hdict, Sdict, Rdict = loadModel_jsonNote()
 print("Server Start!!!!")
 
+# instantiate the app
 app = Flask(__name__)
+app.config.from_object(__name__)
+
+# enable CORS
+CORS(app)
+
+
 @app.route('/')
 def index():
     return render_template("index.html",check = check)
 
+@app.route('/getUser', methods = ['GET'])
+def getUser():
+    with open('user.json') as json_file:  
+        data = json.load(json_file)
+    return jsonify(data)
+
+@app.route('/addUser', methods = ['POST', 'GET'])
+def addUser():
+    if request.method == 'POST':
+        post_data = request.get_json()
+        with open('user.json') as json_file:  
+            data = json.load(json_file)
+        json_file.close()
+        data.append(post_data)
+        with open('user.json', 'w') as outfile:  
+            json.dump(data, outfile)
+        outfile.close()
 
 @app.route('/genSong',methods = ['POST', 'GET'])
 def genSong():
@@ -217,9 +242,8 @@ def genSong():
             prediction_output = generateSong(firstNote,pattern,mood,dataDict, firstIndexNote)
             return render_template("output.html",checkaa = prediction_output)
             #return render_template("output.html",checkaa = test)
-        
+
 if __name__ == '__main__':
-    #Hmodel, Smodel, Rmodel, happyJson, sadJson, relaxJson, Hnetwork, Snetwork, Rnetwork, Hdict, Sdict, Rdict = loadModel_jsonNote()
     app.run(debug = True)
 
 # firstNote = "A5"
