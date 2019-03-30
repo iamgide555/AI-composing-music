@@ -1,3 +1,4 @@
+
 <template>
     <div>
         Signup Page
@@ -6,6 +7,7 @@
             <b-field label="Username">
                 <b-input v-model="username" placeholder="Username"></b-input>
             </b-field>
+            <font color="red" v-if="checkAccount">Same username!</font>
             <b-field label="Password">
                 <b-input type="password"
                     placeholder="Password"
@@ -30,6 +32,7 @@
 </template>
 
 <script>
+/* eslint-disable */
 import axios from 'axios';
 export default {
     data() {
@@ -37,7 +40,9 @@ export default {
             userData: [],
             username: '',
             password: '',
-            email: ''
+            email: '',
+            checkAccount: false,
+            status: ''
         }
     },
     methods: {
@@ -50,7 +55,6 @@ export default {
             const path = 'http://localhost:5000/getUser'
             axios.get(path)
             .then((res) =>{
-                console.log(res.data)
                 this.userData = res.data
             })
             .catch((error) => {
@@ -59,15 +63,25 @@ export default {
         },
         addUser() {
             const path = 'http://localhost:5000/addUser'
-            const payload = {
+            var i;
+            for(i=0;i<this.userData.length;i++) {
+                if(this.username == this.userData[i]["username"]) {
+                    this.checkAccount = true;
+                }
+            }
+            if(this.checkAccount == false) {
+                const payload = {
                 username: this.username,
                 password: this.password,
                 email:this.email
+                }
+                axios.post(path,payload)
+                .catch((error) => {
+                    console.log(error)
+                })
+                this.$router.push('/login')
             }
-            axios.post(path,payload)
-            .catch((error) => {
-                console.log(error)
-            })
+            
         }
     },
     created() {
