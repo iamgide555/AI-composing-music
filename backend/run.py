@@ -112,7 +112,6 @@ def loadModel_jsonNote():
     return Hmodel, Smodel, Rmodel, happyJson, sadJson, relaxJson, Hnetwork, Snetwork, Rnetwork, Hdict, Sdict, Rdict
 
 def getNetworkInput(note, mood):
-
     def getInput(num, network):
         start = numpy.random.randint(0, len(network)-1)
         pattern = network[start]
@@ -180,7 +179,7 @@ def generateSong(firstNote,pattern,mood,my_dict2, firstIndexNote):
     return predictOutput
 
 #Load everyData
-Hmodel, Smodel, Rmodel, happyJson, sadJson, relaxJson, Hnetwork, Snetwork, Rnetwork, Hdict, Sdict, Rdict = loadModel_jsonNote()
+# Hmodel, Smodel, Rmodel, happyJson, sadJson, relaxJson, Hnetwork, Snetwork, Rnetwork, Hdict, Sdict, Rdict = loadModel_jsonNote()
 print("Server Start!!!!")
 
 # instantiate the app
@@ -245,6 +244,10 @@ def genSong():
 
 if __name__ == '__main__':
     app.run(debug = True)
+
+
+
+
 
 # firstNote = "A5"
 # mood = "Relax"

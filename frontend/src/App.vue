@@ -21,16 +21,21 @@
             <div class="navbar-end">
               <div class="navbar-item">
                 <div class="buttons">
-                  <router-link to="/signup">
+                  <router-link to="/signup" v-if="!user">
                     <a class="button">
                       <strong>Sign up</strong>
                     </a>
                   </router-link>
-                  <router-link to="/login">
+                  <router-link to="/login" v-if="!user">
                     <a class="button is-primary">
                       Log in
                     </a>
                   </router-link>
+                  <a
+                  v-else
+                  class="button is-success is-outlined"
+                  @click="logout()"
+                >Hi, {{user.username}} (Logout)</a>
                 </div>
               </div>
             </div>
@@ -42,8 +47,19 @@
 </template>
 
 <script>
+/* eslint-disable */
 export default {
-  name: 'App'
+  name: 'App',
+  computed: {
+    user() {
+      return this.$store.state.user
+    }
+  },
+  methods: {
+    logout() {
+      this.$store.commit('logout', this.$router)
+    }
+  }
 }
 </script>
 
