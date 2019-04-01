@@ -1,6 +1,6 @@
 # AI-composing-music
 
-## Init Project
+## Installation
 
 ``` bash
 # Frontend
