@@ -6,9 +6,8 @@ import router from './router'
 import Buefy from 'buefy'
 import store from './store/store'
 import 'buefy/dist/buefy.css'
-
+/* eslint-disable */
 Vue.use(Buefy)
-
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */
