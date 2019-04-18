@@ -2,275 +2,120 @@
     <div>
         Hi <br>
         {{midiTest}}
+        {{notes}} <br>
+        {{velocities}} <br>
+        {{duration}} <br>
+        {{offset}}
     </div>
 </template>
 <script>
 /* eslint-disable */
 import WebMidi from 'webmidi'
  export default {
-     computed: {
-         midiTest() {
-            var timeUsed = 0;
-            var startTime = 0;
-            var stopTime = 0;
-            var correctChord = [60, 64, 67, 70]; // C7 chord starting on middle C
-            var activeChord = [];
-            var correctNoteSequence = [60, 65, 69, 65, 69, 67, 65, 62, 60]; // Amazing Grace in F
-            var activeNoteSequence = [];
-            var currentStep = 0;
-            navigator.requestMIDIAccess()
-                .then(onMIDISuccess, onMIDIFailure);
-
-            function onMIDISuccess(midiAccess) {
-                for (var input of midiAccess.inputs.values())
-                    input.onmidimessage = getMIDIMessage;
-                var inputs = midiAccess.inputs;
-                var outputs = midiAccess.outputs;
-            }
-            function getMIDIMessage(message) {
-                var command = message.data[0];
-                var note = message.data[1];
-                var velocity = (message.data.length > 2) ? message.data[2] : 0; // a velocity value might not be included with a noteOff command
-                 switch (command) {
-                    case 144: // note on
-                        if (velocity > 0) {
-                            noteOn(note);
-                        }
-                        break;
-                    case 128: // note off
-                        noteOff(note);
-                        break;
-                    // we could easily expand this switch statement to cover other types of commands such as controllers or sysex
-                }
-            }
-
-            function noteOn(note) {
-                console.log(note)
-                startTimer()
-                // console.log("In NoteOn")
-                // switch(currentStep) {
-                //     // If the game hasn't started yet.
-                //     // The first noteOn message we get will run the first sequence
-                //     case 0: 
-                //         // Run our start up sequence
-                //         runSequence('gamestart');
-                //         // Increment the currentStep so this is only triggered once
-                //         currentStep++;
-                        
-                //         break;
-                //      // The first lock - playing a correct sequence
-                //     case 1:
-                //         console.log("NoteOn case 1")
-                //         activeNoteSequence.push(note);
-
-                //         // when the array is the same length as the correct sequence, compare the two
-                //         if (activeNoteSequence.length == correctNoteSequence.length) {
-                //             var match = true;
-                //             for (var index = 0; index < activeNoteSequence.length; index++) {
-                //                 if (activeNoteSequence[index] != correctNoteSequence[index]) {
-                //                     match = false;
-                //                     break;
-                //                 }
-                //             }
-                            
-                //         }
-                //         if (match) {
-                //             // Run the next sequence and increment the current step
-                //             runSequence('lock1');
-                //             currentStep++;
-                //         } else {
-                //             // Clear the array and start over
-                //             activeNoteSequence = [];
-                //         }
-                //     break;
-                //     case 2:
-                //         // add the note to the active chord array
-                //         activeChord.push(note);
-
-                //         // If the array is the same length as the correct chord, compare
-                //         if (activeChord.length == correctChord.length) {
-                //             var match = true;
-                //             for (var index = 0; index < activeChord.length; index++) {
-                //                 if (correctChord.indexOf(activeChord[index]) < 0) {
-                //                     match = false;
-                //                     break;
-                //                 }
-                //             }
-
-                //             if (match) {
-                //                 runSequence('lock2');
-                //                 currentStep++;
-                //             }
-                //         }
-                //     break;
-                // }
-            }
-
-            function noteOff(note) {
-                console.log(note)
-                stopTimer()
-                // console.log("In NoteOff")
-                // switch(currentStep) {
-                //     case 2:
-                //         // Remove the note value from the active chord array
-                //         activeChord.splice(activeChord.indexOf(note), 1);
-                //         break;
-                // }
-            }
-
-            function startTimer() {
-                startTime = new Date();
-                console.log(startTime)
-            }
-            function stopTimer() {
-                stopTime = new Date();
-                timeUsed = stopTime - startTime;
-                console.log(stopTime)
-                console.log("Time Used:" + timeUsed/1000)
-            }
-            function onMIDIFailure() {
-                console.log('Could not access your MIDI devices.');
-            }
-         },
-         webmidiTest() {
-             // Enable WebMidi.js
-            WebMidi.enable(function (err) {
-
-            if (err) {
-                console.log("WebMidi could not be enabled.", err);
-            }
-
-            // Viewing available inputs and outputs
-            console.log(WebMidi.inputs);
-            console.log(WebMidi.outputs);
-
-            // Display the current time
-            console.log(WebMidi.time);
-
-            // Retrieving an output port/device using its id, name or index
-            // var output = WebMidi.getOutputById("123456789");
-            var output = WebMidi.getOutputByName("MIDIOUT2 (Launchkey MIDI)");
-            // output = WebMidi.outputs[0];
-
-            // Play a note on all channels of the selected output
-            output.playNote("C3");
-
-            // Play a note on channel 3
-            output.playNote("Gb4", 3);
-
-            // Play a chord on all available channels
-            output.playNote(["C3", "D#3", "G3"]);
-
-            // Play a chord on channel 7
-            output.playNote(["C3", "D#3", "G3"], 7);
-
-            // Play a note at full velocity on all channels)
-            output.playNote("F#-1", "all", {velocity: 1});
-
-            // Play a note on channel 16 in 2 seconds (relative time)
-            output.playNote("F5", 16, {time: "+2000"});
-
-            // Play a note on channel 1 at an absolute time in the future
-            output.playNote("F5", 16, {time: WebMidi.time + 3000});
-
-            // Play a note for a duration of 2 seconds (will send a note off message in 2 seconds). Also use
-            // a low attack velocity
-            output.playNote("Gb2", 10, {duration: 2000, velocity: 0.25});
-
-            // Stop a playing note on all channels
-            output.stopNote("C-1");
-
-            // Stopping a playing note on channel 11
-            output.stopNote("F3", 11);
-
-            // Stop a playing note on channel 11 and use a high release velocity
-            output.stopNote("G8", 11, {velocity: 0.9});
-
-            // Stopping a playing note in 2.5 seconds
-            output.stopNote("Bb2", 11, {time: "+2500"});
-
-            // Send polyphonic aftertouch message to channel 8
-            output.sendKeyAftertouch("C#3", 8, 0.25);
-
-            // Send pitch bend (between -1 and 1) to channel 12
-            output.sendPitchBend(-1, 12);
-
-            // You can chain most method calls
-            output.playNote("G5", 12)
-                .sendPitchBend(-0.5, 12, {time: 400}) // After 400 ms.
-                .sendPitchBend(0.5, 12, {time: 800})  // After 800 ms.
-                .stopNote("G5", 12, {time: 1200});    // After 1.2 s.
-
-            // Retrieve an input by name, id or index
-            var input = WebMidi.getInputByName("MIDIIN2 (Launchkey MIDI)");
-            console.log(input)
-            // Listen for a 'note on' message on all channels
-            input.addListener('noteon', "all",
-                function (e) {
-                console.log("Received 'noteon' message (" + e.note.name + e.note.octave + ").");
-                }
-            );
-
-            // Listen to pitch bend message on channel 3
-            input.addListener('pitchbend', 3,
-                function (e) {
-                console.log("Received 'pitchbend' message.", e);
-                }
-            );
-
-            // Listen to control change message on all channels
-            input.addListener('controlchange', "all",
-                function (e) {
-                console.log("Received 'controlchange' message.", e);
-                }
-            );
-
-            // Check for the presence of an event listener (n such cases, you cannot use anonymous functions).
-            function test(e) { console.log(e); }
-            input.addListener('programchange', 12, test);
-            console.log("Has event listener: ", input.hasListener('programchange', 12, test));
-
-            // Remove a specific listener
-            input.removeListener('programchange', 12, test);
-            console.log("Has event listener: ", input.hasListener('programchange', 12, test));
-
-            // Remove all listeners of a specific type on a specific channel
-            input.removeListener('noteoff', 12);
-
-            // Remove all listeners for 'noteoff' on all channels
-            input.removeListener('noteoff');
-
-            // Remove all listeners on the input
-            input.removeListener();
-
-            });
-         },
-         test() {
-             var a = 0
-             WebMidi.enable(function(err) {
-                while(a== 0){
-                    console.log("inwhile")
-                    WebMidi.inputs[0].addListener('pitchbend', "all", function(e) {
-                        console.log("In la")
-                        console.log("Pitch value: " + e.value);
-                        a = 1;
-                        });
-                }
-            });
+     data() {
+         return {
+             notes: [],
+             velocities: [],
+             duration: [],
+             offset: [],
+             chordCheck: 0,
+             currentNote: [],
+             timeUsed: [],
+             startTime: [],
+             stopTime: [],
+             currentVelocity: [],
+             allNote : {36: 'C1', 48: 'C2', 60: 'C3', 72: 'C4', 37: 'C#1', 49: 'C#2', 61: 'C#3', 73: 'C#4', 38: 'D1', 50: 'D2', 62: 'D3', 74: 'D4', 39: 'D#1', 51: 'D#2', 63: 'D#3', 75: 'D#4', 40: 'E1', 52: 'E2', 64: 'E3', 76: 'E4', 41: 'F1', 53: 'F2', 65: 'F3', 77: 'F4', 42: 'F#1', 54: 'F#2', 66: 'F#3', 78: 'F#4', 43: 'G1', 55: 'G2', 67: 'G3', 79: 'G4', 44: 'G#1', 56: 'G#2', 68: 'G#3', 80: 'G#4', 45: 'A1', 57: 'A2', 69: 'A3', 81: 'A4', 46: 'A#1', 58: 'A#2', 70: 'A#3', 82: 'A#4', 47: 'B1', 59: 'B2', 71: 'B3', 83: 'B4', 84: 'C5'},
          }
      },
-    //  created() {
-    //      if (navigator.requestMIDIAccess) {
-    //         console.log('This browser supports WebMIDI!');
-    //     } else {
-    //         console.log('WebMIDI is not supported in this browser.');
-    //     }
-    //     WebMidi.enable(function () {
-    //         // Viewing available inputs and outputs
-    //         console.log(WebMidi.inputs);
-    //         console.log(WebMidi.outputs);
-    //         WebMidi.outputs[1].playNote("C3");
-    //     })
-    //  }
+     methods: {
+        onMIDISuccess(midiAccess) {
+            for (var input of midiAccess.inputs.values())
+                input.onmidimessage = this.getMIDIMessage;
+            var inputs = midiAccess.inputs;
+            var outputs = midiAccess.outputs;
+        },
+        getMIDIMessage(message) {
+            var command = message.data[0];
+            var note = message.data[1];
+            var velocity = (message.data.length > 2) ? message.data[2] : 0; // a velocity value might not be included with a noteOff command
+            switch (command) {
+                case 144: // note on
+                    if (velocity > 0) {
+                        this.currentNote.push(this.allNote[note]);
+                        this.noteOn(this.allNote[note]);
+                        this.currentVelocity[this.allNote[note]] = velocity;
+                    }
+                    break;
+                case 128: // note off
+                    this.notes.push(this.allNote[note])
+                    this.velocities.push(this.currentVelocity[this.allNote[note]])
+                    this.noteOff(this.allNote[note],this.currentVelocity[this.allNote[note]]);
+                    this.duration.push(this.timeUsed[this.allNote[note]]*2)
+                    // if(this.offset.length == 0)
+                    // {
+                    //     this.offset.push(1)
+                    // }
+                    // else
+                    // {
+                    //     var a = this.currentNote[0]
+                    //     console.log((this.startTime[this.allNote[note]] - this.startTime[a])/1000*2);
+                    //     console.log(this.startTime[this.allNote[note]]);
+                    //     console.log(this.startTime[1]);           
+                    //     this.offset.push(
+                    //         (this.startTime[this.allNote[note]] - this.startTime[a])/1000*2
+                    //     )
+                    // }
+                    var popNote = this.currentNote;
+                    this.currentNote = [];
+                    for(var i=0;i<popNote.length;i++)
+                    {
+                        if(popNote[i] != this.allNote[note])
+                        {
+                            this.currentNote.push(popNote[i])
+                        }
+                        else
+                        {
+                            var previousNote = popNote[i];
+                        }
+                    }
+                    
+                    // console.log(this.allNote[note]," : ",this.currentNote);
+                    break;
+                // we could easily expand this switch statement to cover other types of commands such as controllers or sysex
+            }
+            if(this.currentNote.length == 0)
+            {
+                this.chordCheck = 3
+            }
+        },
+        noteOn(note) {
+            this.startTimer(note)
+        },
+        noteOff(note,velocity) {
+            this.stopTimer(note,velocity)
+        },
+
+        startTimer(note) {
+            this.startTime[note] = new Date();
+        },
+        stopTimer(note,velocity) {
+            this.stopTime[note] = new Date();
+            this.timeUsed[note] = (this.stopTime[note] - this.startTime[note])/1000;
+            this.showData(note,velocity,this.timeUsed[note]);
+        },
+        showData(note,velocity,timeUsed) {
+            console.log(note,velocity,timeUsed*2);
+            console.log("Time Used:" + timeUsed,"s.");
+        },
+        onMIDIFailure() {
+            console.log('Could not access your MIDI devices.');
+        },
+     },
+     computed: {
+         midiTest() {
+            navigator.requestMIDIAccess()
+                .then(this.onMIDISuccess, this.onMIDIFailure);
+         },
+     },
  }
 </script>
