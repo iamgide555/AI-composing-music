@@ -3,6 +3,7 @@ from flask_cors import CORS
 from keras.models import load_model
 from keras import backend
 import tensorflow as tf
+import math
 import numpy
 import json
 import random
@@ -144,9 +145,9 @@ def getNetworkInput(note, mood):
         network_input = getInput(randomNote, Rnetwork)
     return network_input, randomNote
 
-def generateSong(firstNote,pattern,mood,my_dict2, firstIndexNote):
+def generateSong(pattern,mood,my_dict2):
     predictOutput = None
-    def generator(genPattern):
+    def generator(genPattern,mood,my_dict2):
         if mood == "Happy":
             model1 = Hmodel
         elif mood == "Sad":
@@ -156,14 +157,9 @@ def generateSong(firstNote,pattern,mood,my_dict2, firstIndexNote):
         global graph
         with graph.as_default():
             prediction_output = []
-            for x in my_dict2.keys():
-                if my_dict2[x][0] == firstNote:
-                    print("Hi")
-                    prediction_output.append(my_dict2[x])
-                    break
-            print("FirstNote : ",firstNote)
-            print("FirstIndex : ",firstIndexNote)
-            print("Note : ",prediction_output)
+            for x in genPattern:
+                prediction_output.append(my_dict2[x])
+            genPattern = genPattern[len(genPattern)-50:]
             for prediction_index in range (100):
                 prediction_input = numpy.reshape(genPattern, (1, len(genPattern), 1))
                 prediction = model1.predict(prediction_input, verbose = 0)
@@ -175,12 +171,86 @@ def generateSong(firstNote,pattern,mood,my_dict2, firstIndexNote):
                 genPattern = genPattern[1:len(genPattern)]
             return prediction_output
     print("Start")
-    predictOutput = generator(pattern)
+    predictOutput = generator(pattern,mood,my_dict2)
+    print("Done")
     return predictOutput
 
-#Load everyData
-# Hmodel, Smodel, Rmodel, happyJson, sadJson, relaxJson, Hnetwork, Snetwork, Rnetwork, Hdict, Sdict, Rdict = loadModel_jsonNote()
-print("Server Start!!!!")
+def preData(rawData):
+    def round_of_rating(number):
+        return round(number * 4) / 4
+
+    def round_of_rating_two(number):
+        return round(number * 2) / 2
+
+    def round_of_rating_three(number):
+        return int(math.ceil(number / 16))* 16
+
+    def getDictData(notes,duration,offset,velocities,dataNote,dataDuration,dataOffset,dataVelocity):
+        predData = []
+        for x in range(len(notes)):
+            checkD = {}
+            checkO = {}
+            checkV = {}
+            for y in range(len(dataNote)):
+                if(notes[x] == dataNote[y]):
+                    if(str(duration[x]) == dataDuration[y]):
+                        if(str(offset[x]) == dataOffset[y]):
+                            if(str(velocities[x]) == dataVelocity[y]):
+                                predData.append(y)
+                                break;
+                            else:
+                                checkV[dataVelocity[y]] = [y]
+                        else:
+                            checkO[dataOffset[y]] = y
+                    else:
+                        checkD[dataDuration[y]] = y
+            if(len(checkD) != 0):
+                predData.append(max(checkD.values()))
+            elif(len(checkO) != 0):
+                predData.append(max(checkO.values()))
+            elif(len(checkV) != 0):
+                predData.append(max(checkV.values()))
+        return predData
+
+    predData = []
+    notes = rawData["note"]
+    duration = rawData["duration"]
+    offset = rawData["offset"]
+    velocities = rawData["velocity"]
+    mood = rawData["mood"]
+    for x in range (len(duration)):
+        if duration [x] != -1:        
+            if duration[x] > 5:
+                duration[x] = round_of_rating_two(duration[x])
+            else:
+                duration[x] = round_of_rating(duration[x]) 
+            offset[x] = round_of_rating(offset[x])
+            velocities[x] = round_of_rating_three(velocities[x])
+            if velocities[x] > 128:
+                velocities[x] = 128
+    if(mood == "Happy"):
+        my_dict2 = Hdict
+    elif(mood == "Sad"):
+        my_dict2 = Sdict
+    elif(mood == "Relax"):
+        my_dict2 = Rdict
+    data = my_dict2.values()
+    dataNote = []
+    dataDuration = []
+    dataOffset = []
+    dataVelocity = []
+    for x in list(data):
+        dataNote.append(x[0])
+        dataDuration.append(x[1])
+        dataOffset.append(x[2])
+        dataVelocity.append(x[3])
+    predData = getDictData(notes,duration,offset,velocities,dataNote,dataDuration,dataOffset,dataVelocity)
+    return predData,my_dict2,mood
+    
+     
+# Load everyData
+Hmodel, Smodel, Rmodel, happyJson, sadJson, relaxJson, Hnetwork, Snetwork, Rnetwork, Hdict, Sdict, Rdict = loadModel_jsonNote()
+print("Server Start!!")
 
 # instantiate the app
 app = Flask(__name__)
@@ -214,36 +284,48 @@ def addUser():
 
 @app.route('/genSong',methods = ['POST', 'GET'])
 def genSong():
-    allNote =  ["A1","A2","A3","A4","A5","A6","A7","A8",
-                "B1","B2","B3","B4","B5","B6","B7","B8",
-                "C1","C2","C3","C4","C5","C6","C7","C8",
-                "D1","D2","D3","D4","D5","D6","D7","D8",
-                "E1","E2","E3","E4","E5","E6","E7","E8",
-                "F1","F2","F3","F4","F5","F6","F7","F8",
-                "G1","G2","G3","G4","G5","G6","G7","G8"]
+    usedData = []
+    predictOutput = []
     if request.method == 'POST':
-        firstNote = request.form['firstNote']
-        if firstNote not in allNote:
-            check = 1
-            return render_template("index.html",check = check)
-        else:
-            mood = request.form['mood']
-            print(firstNote)
-            print(mood)
-            if mood == "Happy":
-                dataDict = Hdict
-            elif mood == "Sad":
-                dataDict = Sdict
-            elif mood == "Relax":
-                dataDict = Rdict
-            pattern,firstIndexNote = getNetworkInput(firstNote,mood)
-            print("Len dict :",len(dataDict))
-            prediction_output = generateSong(firstNote,pattern,mood,dataDict, firstIndexNote)
-            return render_template("output.html",checkaa = prediction_output)
-            #return render_template("output.html",checkaa = test)
+        post_data = request.get_json()
+        usedData,my_dict2, mood = preData(post_data)
+        predictOutput = generateSong(usedData,mood,my_dict2)
+        print(predictOutput)
+    if request.method == 'GET':
+        print(predictOutput)
+        data = {"data": predictOutput}
+        return jsonify(data)
+    return 'Completed'
+    # allNote =  ["A1","A2","A3","A4","A5","A6","A7","A8",
+    #             "B1","B2","B3","B4","B5","B6","B7","B8",
+    #             "C1","C2","C3","C4","C5","C6","C7","C8",
+    #             "D1","D2","D3","D4","D5","D6","D7","D8",
+    #             "E1","E2","E3","E4","E5","E6","E7","E8",
+    #             "F1","F2","F3","F4","F5","F6","F7","F8",
+    #             "G1","G2","G3","G4","G5","G6","G7","G8"]
+    # if request.method == 'POST':
+    #     firstNote = request.form['firstNote']
+    #     if firstNote not in allNote:
+    #         check = 1
+    #         return render_template("index.html",check = check)
+    #     else:
+    #         mood = request.form['mood']
+    #         print(firstNote)
+    #         print(mood)
+    #         if mood == "Happy":
+    #             dataDict = Hdict
+    #         elif mood == "Sad":
+    #             dataDict = Sdict
+    #         elif mood == "Relax":
+    #             dataDict = Rdict
+    #         pattern,firstIndexNote = getNetworkInput(firstNote,mood)
+    #         print("Len dict :",len(dataDict))
+    #         prediction_output = generateSong(firstNote,pattern,mood,dataDict, firstIndexNote)
+    #         return render_template("output.html",checkaa = prediction_output)
+    #         #return render_template("output.html",checkaa = test)
 
 if __name__ == '__main__':
-    app.run(debug = True)
+    app.run()
 
 
 
