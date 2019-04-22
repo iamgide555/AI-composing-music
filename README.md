@@ -10,5 +10,5 @@
 
 # Backend
 1.cd backend/
-2.FLASK_APP=run.py FLASK_DEBUG=1 flask run on terminal || python run.py
+2.sh ./command.txt on terminal || python run.py
 ```
