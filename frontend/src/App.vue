@@ -10,9 +10,9 @@
               </a>
 
               <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
-                <span aria-hidden="true"></span>
-                <span aria-hidden="true"></span>
-                <span aria-hidden="true"></span>
+                <span aria-hidden="true">wtf</span>
+                <span aria-hidden="true">wttt</span>
+                <span aria-hidden="true">sadasd</span>
               </a>
             </div>
           </router-link>
@@ -70,6 +70,6 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  
 }
 </style>

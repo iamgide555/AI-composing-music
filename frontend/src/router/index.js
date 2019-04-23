@@ -5,6 +5,7 @@ import Login from '@/components/Login'
 import Signup from '@/components/Signup'
 import Test from '@/components/Test'
 import Test2 from '@/components/Test2'
+import Generate from '@/components/Generate'
 
 Vue.use(Router)
 
@@ -35,6 +36,11 @@ export default new Router({
       path: '/test2',
       name: 'Test2',
       component: Test2
+    },
+    {
+      path: '/Generate',
+      name: 'Generate',
+      component: Generate
     }
   ]
 })
