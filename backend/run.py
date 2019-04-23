@@ -187,6 +187,7 @@ def preData(rawData):
 
     def getDictData(notes,duration,offset,velocities,dataNote,dataDuration,dataOffset,dataVelocity):
         predData = []
+        yoyo = 0
         for x in range(len(notes)):
             checkD = {}
             checkO = {}
@@ -197,6 +198,9 @@ def preData(rawData):
                         if(str(offset[x]) == dataOffset[y]):
                             if(str(velocities[x]) == dataVelocity[y]):
                                 predData.append(y)
+                                checkD = {}
+                                checkO = {}
+                                checkV = {}
                                 break;
                             else:
                                 checkV[dataVelocity[y]] = [y]
@@ -204,12 +208,29 @@ def preData(rawData):
                             checkO[dataOffset[y]] = y
                     else:
                         checkD[dataDuration[y]] = y
-            if(len(checkD) != 0):
-                predData.append(max(checkD.values()))
-            elif(len(checkO) != 0):
-                predData.append(max(checkO.values()))
-            elif(len(checkV) != 0):
-                predData.append(max(checkV.values()))
+            if(len(checkV) == 1):
+                listKey = list(checkV.values())
+                predData.append(listKey[0][0])
+            elif(len(checkV) > 1):
+                nearestVelocity = []
+                checkVelocity = 200
+                for z in checkV:
+                    if(abs(float(velocities[x]) - float(z)) < float(checkVelocity)):
+                        nearestVelocity = []
+                        nearestVelocity.append(z)
+                        checkVelocity = abs(float(velocities[x]) - float(z))
+                    elif(abs(float(velocities[x]) - float(z)) == float(checkVelocity)):
+                        nearestVelocity.append(z)
+                predData.append(checkV[nearestVelocity[0]])
+            else:
+                if(len(checkO) == 1):
+                    listKey = list(checkO.values())
+                    print(x,".checkO.values() : ",type(listKey[0][0]))
+                    predData.append(listKey[0][0])
+                elif(len(checkO) > 1):
+                    print(len(checkO))
+        print(predData)
+        print(len(predData))
         return predData
 
     predData = []
@@ -289,7 +310,7 @@ def genSong():
     if request.method == 'POST':
         post_data = request.get_json()
         usedData,my_dict2, mood = preData(post_data)
-        predictOutput = generateSong(usedData,mood,my_dict2)
+        # predictOutput = generateSong(usedData,mood,my_dict2)
         print(predictOutput)
     if request.method == 'GET':
         print(predictOutput)
