@@ -189,6 +189,7 @@ def preData(rawData):
         predData = []
         yoyo = 0
         for x in range(len(notes)):
+            listCheck = []
             checkD = {}
             checkO = {}
             checkV = {}
@@ -203,34 +204,77 @@ def preData(rawData):
                                 checkV = {}
                                 break;
                             else:
-                                checkV[dataVelocity[y]] = [y]
+                                listCheck.append("V")
+                                checkV[dataVelocity[y]] = y
                         else:
+                            listCheck.append("O")
                             checkO[dataOffset[y]] = y
                     else:
+                        listCheck.append("D")
                         checkD[dataDuration[y]] = y
-            if(len(checkV) == 1):
-                listKey = list(checkV.values())
-                predData.append(listKey[0][0])
-            elif(len(checkV) > 1):
-                nearestVelocity = []
-                checkVelocity = 200
-                for z in checkV:
-                    if(abs(float(velocities[x]) - float(z)) < float(checkVelocity)):
-                        nearestVelocity = []
-                        nearestVelocity.append(z)
-                        checkVelocity = abs(float(velocities[x]) - float(z))
-                    elif(abs(float(velocities[x]) - float(z)) == float(checkVelocity)):
-                        nearestVelocity.append(z)
-                predData.append(checkV[nearestVelocity[0]])
-            else:
+            if("V" in listCheck):
+                yoyo += 1
+                if(len(checkV) == 1):
+                    listKey = list(checkV.values())
+                    predData.append(listKey[0])
+                elif(len(checkV) > 1):
+                    nearestVelocity = []
+                    checkVelocity = 200
+                    for z in checkV:
+                        if(abs(float(velocities[x]) - float(z)) < float(checkVelocity)):
+                            nearestVelocity = []
+                            nearestVelocity.append(z)
+                            checkVelocity = abs(float(velocities[x]) - float(z))
+                        elif(abs(float(velocities[x]) - float(z)) == float(checkVelocity)):
+                            nearestVelocity.append(z)
+                    predData.append(checkV[nearestVelocity[0]])
+            elif("O" in listCheck):
+                yoyo += 1
                 if(len(checkO) == 1):
                     listKey = list(checkO.values())
-                    print(x,".checkO.values() : ",type(listKey[0][0]))
-                    predData.append(listKey[0][0])
+                    predData.append(listKey[0])
                 elif(len(checkO) > 1):
-                    print(len(checkO))
-        print(predData)
-        print(len(predData))
+                    nearestOffset = []
+                    checkOffset = 200
+                    for z in checkO:
+                        if(abs(float(offset[x]) - float(z)) < float(checkOffset)):
+                            nearestOffset = []
+                            nearestOffset.append(z)
+                            checkOffset = abs(float(offset[x]) - float(z))
+                        elif(abs(float(offset[x]) - float(z)) == float(checkOffset)):
+                            nearestOffset.append(z)
+                    predData.append(checkO[nearestOffset[0]])
+            elif("D" in listCheck):
+                yoyo += 1
+                if(len(checkD) == 1):
+                    listKey = list(checkD.values())
+                    predData.append(listKey[0][0])
+                elif(len(checkD) > 1):
+                    nearestDuration = []
+                    checkDuration = 200
+                    for z in checkD:
+                        if(abs(float(duration[x]) - float(z)) < float(checkDuration)):
+                            nearestDuration = []
+                            nearestDuration.append(z)
+                            checkDuration = abs(float(duration[x]) - float(z))
+                        elif(abs(float(duration[x]) - float(z)) == float(checkDuration)):
+                            nearestDuration.append(z)
+                    predData.append(checkD[nearestDuration[0]])
+        print(yoyo," : ",len(predData))
+            # if(len(checkV) == 1):
+            #     listKey = list(checkV.values())
+            #     predData.append(listKey[0][0])
+            # elif(len(checkV) > 1):
+            #     nearestVelocity = []
+            #     checkVelocity = 200
+            #     for z in checkV:
+            #         if(abs(float(velocities[x]) - float(z)) < float(checkVelocity)):
+            #             nearestVelocity = []
+            #             nearestVelocity.append(z)
+            #             checkVelocity = abs(float(velocities[x]) - float(z))
+            #         elif(abs(float(velocities[x]) - float(z)) == float(checkVelocity)):
+            #             nearestVelocity.append(z)
+            #     predData.append(checkV[nearestVelocity[0]])
         return predData
 
     predData = []
@@ -266,6 +310,8 @@ def preData(rawData):
         dataOffset.append(x[2])
         dataVelocity.append(x[3])
     predData = getDictData(notes,duration,offset,velocities,dataNote,dataDuration,dataOffset,dataVelocity)
+    for x in range(len(notes)):
+        print(notes[x],",",duration[x],",",offset[x],",",velocities[x]," --> ",my_dict2[predData[x]])
     return predData,my_dict2,mood
     
      
