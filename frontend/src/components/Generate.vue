@@ -164,6 +164,9 @@ export default {
     from {filter: brightness(50%);}
     to {filter: brightness(100%);}
 }
+body {
+  background-image: linear-gradient(#24234D,#241428);
+}
 
 #piano {
     z-index: 3;

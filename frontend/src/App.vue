@@ -1,7 +1,7 @@
 <template>
   <div id="app">
-      <section class="hero is-primary">
-        <nav class="navbar" role="navigation" aria-label="main navigation">
+      <section class="hero is-dark">
+        <nav class="navbar is-transparent"  role="navigation" aria-label="main navigation">
           <router-link to="/">
             <div class="navbar-brand">
               <a class="navbar-item" href="https://bulma.io">
@@ -10,9 +10,9 @@
               </a>
 
               <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
-                <span aria-hidden="true">wtf</span>
-                <span aria-hidden="true">wttt</span>
-                <span aria-hidden="true">sadasd</span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
               </a>
             </div>
           </router-link>
@@ -59,6 +59,7 @@ export default {
     logout() {
       this.$store.commit('logout', this.$router)
     }
+    
   }
 }
 </script>
@@ -69,7 +70,12 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
-  
+  color: #2c3e50; 
+}
+html,body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background-image: linear-gradient(#24234D,#241428);
 }
 </style>

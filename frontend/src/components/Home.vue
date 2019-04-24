@@ -3,3 +3,7 @@
     Home Page
   </div>
 </template>
+
+<style>
+
+</style>
