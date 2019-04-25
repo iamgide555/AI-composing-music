@@ -6,6 +6,8 @@ import tensorflow as tf
 import math
 import numpy
 import json
+from music21 import *
+from music21.midi import *
 import random
 
 check = 0
@@ -112,7 +114,6 @@ def loadModel_jsonNote():
         
     return Hmodel, Smodel, Rmodel, happyJson, sadJson, relaxJson, Hnetwork, Snetwork, Rnetwork, Hdict, Sdict, Rdict
 
-def getNetworkInput(note, mood):
     def getInput(num, network):
         start = numpy.random.randint(0, len(network)-1)
         pattern = network[start]
@@ -159,7 +160,15 @@ def generateSong(pattern,mood,my_dict2):
             prediction_output = []
             for x in genPattern:
                 prediction_output.append(my_dict2[x])
-            genPattern = genPattern[len(genPattern)-50:]
+            if(len(genPattern) < 50):
+                newPattern = genPattern
+                genPattern = []
+                for y in range(50-len(newPattern)):
+                    genPattern.append(-1)
+                for y in newPattern:
+                    genPattern.append(y)
+            elif(len(genPattern) > 50):
+                genPattern = genPattern[len(genPattern)-50:]
             for prediction_index in range (100):
                 prediction_input = numpy.reshape(genPattern, (1, len(genPattern), 1))
                 prediction = model1.predict(prediction_input, verbose = 0)
@@ -310,11 +319,54 @@ def preData(rawData):
         dataOffset.append(x[2])
         dataVelocity.append(x[3])
     predData = getDictData(notes,duration,offset,velocities,dataNote,dataDuration,dataOffset,dataVelocity)
-    for x in range(len(notes)):
+    for x in range(len(predData)):
         print(notes[x],",",duration[x],",",offset[x],",",velocities[x]," --> ",my_dict2[predData[x]])
     return predData,my_dict2,mood
     
-     
+def getMidi(prediction_output):
+    prediction_output = numpy.asarray(prediction_output)
+    predict_note = []
+    predict_duration = []
+    predict_offset = []
+    predict_velo = []
+    for x in prediction_output:
+        predict_note.append(x[0])
+        predict_duration.append(x[1])
+        predict_offset.append(x[2])
+        predict_velo.append(x[3])
+    for x in range(len(predict_duration)):
+        predict_duration[x] = float(predict_duration[x])
+    for x in range(len(predict_velo)):
+        predict_velo[x] = float(predict_velo[x])
+    for x in range(len(predict_offset)):
+        predict_offset[x] = float(predict_offset[x])
+    offset = 0
+    output_notes = []
+    for x in range(len(predict_note)):
+        if ('.' in predict_note[x]) or predict_note[x].isdigit():
+            notes_in_chord = predict_note[x].split('.')
+            notes = []
+            for current_note in notes_in_chord:
+                new_note = note.Note(int(current_note))
+                new_note.storedInstrument = instrument.Piano()
+                new_note.duration.quarterLength = predict_duration[x]
+                new_note.volume.velocity = predict_velo[x]
+                notes.append(new_note)
+            new_chord = chord.Chord(notes)
+            new_chord.offset = offset
+            output_notes.append(new_chord)
+        else:
+            new_note = note.Note(predict_note[x])
+            new_note.offset = offset
+            new_note.storedInstrument = instrument.Piano()
+            new_note.duration.quarterLength = predict_duration[x]
+            new_note.volume.velocity = predict_velo[x]
+            output_notes.append(new_note)
+        offset += predict_offset[x]
+        midi_stream = stream.Stream(output_notes)
+    midi_stream.write('midi', fp='TestOutput.mid')
+    return "TestOutput.mid"
+        
 # Load everyData
 Hmodel, Smodel, Rmodel, happyJson, sadJson, relaxJson, Hnetwork, Snetwork, Rnetwork, Hdict, Sdict, Rdict = loadModel_jsonNote()
 print("Server Start!!")
@@ -356,13 +408,16 @@ def genSong():
     if request.method == 'POST':
         post_data = request.get_json()
         usedData,my_dict2, mood = preData(post_data)
-        # predictOutput = generateSong(usedData,mood,my_dict2)
+        print(len(usedData))
+        print(usedData)
+        predictOutput = generateSong(usedData,mood,my_dict2)
+        fileName = getMidi(predictOutput)
         print(predictOutput)
     if request.method == 'GET':
         print(predictOutput)
         data = {"data": predictOutput}
         return jsonify(data)
-    return 'Completed'
+    return fileName
     # allNote =  ["A1","A2","A3","A4","A5","A6","A7","A8",
     #             "B1","B2","B3","B4","B5","B6","B7","B8",
     #             "C1","C2","C3","C4","C5","C6","C7","C8",
