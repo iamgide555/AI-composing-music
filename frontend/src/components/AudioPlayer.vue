@@ -63,8 +63,8 @@
 
 <script>
 export default {
-    
 
+    
 	props: {
 		file: {
 			type: String,
@@ -183,81 +183,60 @@ body {
 	text-rendering: optimizeLegibility;
 }
 
-$player-bg: #fff;
-$player-border-color: darken($player-bg, 12%);
-$player-link-color: darken($player-bg, 75%);
-$player-progress-color: $player-border-color;
-$player-seeker-color: $player-link-color;
-$player-text-color: $player-link-color; 
-
 .player-wrapper {
-	align-items: center;
-	background-color:  #fff;
-	background-image: linear-gradient(90deg, #fff 0, darken(#fff, 12%));
+	align-content: space-between;
 	display: flex;
 	justify-content: center;
-	height: 100vh;
+	height: 50px;
 }
 
 .player {
-	background-color: $player-bg;
-	border: 1px solid $player-border-color;
-	border-radius: 5px;
-	box-shadow: 0 5px 8px rgba(0,0,0,0.15);
-	color: $player-text-color;
-	display: inline-block;
-	line-height: 1.5625;
+	background-color: #a091bb;
+	border: 1.5px solid  #919191;
+	border-radius: 6px;
+	box-shadow: 10px 5px 8px rgba(0,0,0,0.15);
+	color: #030303;
+    display: inline;
+	line-height: 2;
 }
 
 .player-controls {
-	display: flex;
-	
-	> div {
-		border-right: 1px solid $player-border-color;
-		
-		&:last-child {
-			border-right: none;
-		}
-		
-		a {
-			color: $player-link-color;
-			display: block;
-			line-height: 0;
-			padding: 1em;
-			text-decoration: none;
-		}
-	}
+	display: -webkit-flex;
+}
+.player-controls a {
+    color: #3a1d68;
+    display: -webkit-box;
+    line-height: 0;
+    padding: 10px;
 }
 
 .player-progress {
-	background-color: $player-progress-color;
+	background-color: #d6d4f5;
 	cursor: pointer;
+    margin-top: 1%;
 	height: 50%;
 	min-width: 200px;
 	position: relative;
-	
-	.player-seeker {
-		background-color: $player-seeker-color;
-		bottom: 0;
-		left: 0;
-		position: absolute;
-		top: 0;
-	}
+}
+.player-seeker {
+    background-color: #6257ff;
+    bottom: 0;
+    left: 0;
+    position: absolute;
+    top: 0;
+}
+.player-time {
+    display: -webkit-flex;
+	font-size: 18px;
+	justify-content: space-between;
+}
+.player-time-current {
+    font-weight: 10000;
+    padding-left: 5px;
 }
 
-.player-time {
-	display: flex;
-	// font-size: 18px;
-	justify-content: space-between;
-
-	.player-time-current {
-		font-weight: 700;
-		padding-left: 5px;
-	}
-
-	.player-time-total {
-		opacity: 0.5;
-		padding-right: 5px;
-	}
+.player-time-total {
+    opacity: 1.0;
+    padding-right: 5px;
 }
 </style>
