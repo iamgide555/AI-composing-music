@@ -5,7 +5,7 @@
     <router-link to="/generate">
       <a>Generate</a>
     </router-link>
-    <br>
+    <br><br>
     <div class="player-wrapper">
     	<audio-player file="/static/notes/a49.mp3"></audio-player>
     </div>
