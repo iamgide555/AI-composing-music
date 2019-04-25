@@ -59,92 +59,62 @@ def loadModel_jsonNote():
         perplexity = backend.pow(2.0, cross_entropy)
         return perplexity
     #Load Model
-    Hmodel = load_model('./Model_moods/Fmodel_happy.h5',custom_objects={'perplexity': perplexity})
+    Hmodel = load_model('./Model_moods/model_happy_padding_1.h5',custom_objects={'perplexity': perplexity})
     Smodel = load_model('./Model_moods/Fmodel_sad.h5',custom_objects={'perplexity': perplexity})
     Rmodel = load_model('./Model_moods/Fmodel_relax.h5',custom_objects={'perplexity': perplexity})
     
     #Load Note
-    with open("NoteData/happyNote.json") as f:
+    with open("./NoteData/happy_dict.json") as f:
         happyJson = json.load(f)
     Hdict = getDict(happyJson)
     f.close()
-    with open("NoteData/sadNote.json") as f:
+    with open("./NoteData/sadNote.json") as f:
         sadJson = json.load(f)
     Sdict = getDict(sadJson)
     f.close()
-    with open("NoteData/relaxNote.json") as f:
+    with open("./NoteData/relaxNote.json") as f:
         relaxJson = json.load(f)
     Rdict = getDict(relaxJson)
+    print(len(Rdict))
     f.close()
 
-    #Load networkInput
-    with open("./networkInput/Hnetwork.txt", 'r') as f:
-        data = f.read()
-    f.close
-    data1 = data.split("|")
-    Hnetwork = []
-    for x in range(len(data1)-2):
-        test = data1[x].split(",")
-        z = []
-        for y in test:
-            z.append(y)
-        Hnetwork.append(z)
-    with open("./networkInput/Snetwork.txt", 'r') as f:
-        data = f.read()
-    f.close
-    data1 = data.split("|")
-    Snetwork = []
-    for x in range(len(data1)-2):
-        test = data1[x].split(",")
-        z = []
-        for y in test:
-            z.append(y)
-        Snetwork.append(z)
-    with open("./networkInput/Rnetwork.txt", 'r') as f:
-        data = f.read()
-    f.close
-    data1 = data.split("|")
-    Rnetwork = []
-    for x in range(len(data1)-2):
-        test = data1[x].split(",")
-        z = []
-        for y in test:
-            z.append(y)
-        Rnetwork.append(z)
+    # #Load networkInput
+    # with open("./networkInput/Hnetwork.txt", 'r') as f:
+    #     data = f.read()
+    # f.close
+    # data1 = data.split("|")
+    # Hnetwork = []
+    # for x in range(len(data1)-2):
+    #     test = data1[x].split(",")
+    #     z = []
+    #     for y in test:
+    #         z.append(y)
+    #     Hnetwork.append(z)
+    # with open("./networkInput/Snetwork.txt", 'r') as f:
+    #     data = f.read()
+    # f.close
+    # data1 = data.split("|")
+    # Snetwork = []
+    # for x in range(len(data1)-2):
+    #     test = data1[x].split(",")
+    #     z = []
+    #     for y in test:
+    #         z.append(y)
+    #     Snetwork.append(z)
+    # with open("./networkInput/Rnetwork.txt", 'r') as f:
+    #     data = f.read()
+    # f.close
+    # data1 = data.split("|")
+    # Rnetwork = []
+    # for x in range(len(data1)-2):
+    #     test = data1[x].split(",")
+    #     z = []
+    #     for y in test:
+    #         z.append(y)
+    #     Rnetwork.append(z)
         
     return Hmodel, Smodel, Rmodel, happyJson, sadJson, relaxJson, Hnetwork, Snetwork, Rnetwork, Hdict, Sdict, Rdict
 
-    def getInput(num, network):
-        start = numpy.random.randint(0, len(network)-1)
-        pattern = network[start]
-        new_pattern = []
-        for x in range(1,len(pattern)):
-            new_pattern.append(pattern[x])
-        new_pattern.append(num)
-        return new_pattern
-
-    firstNote_number = []
-    if mood == "Happy":
-        for x in range(len(happyJson)):
-            if happyJson[x]["note"] == note:
-                firstNote_number.append(happyJson[x]["num"])
-        print("All number: ",firstNote_number)
-        randomNote = firstNote_number[random.randint(0,len(firstNote_number))]
-        print("Random: ",randomNote)
-        network_input = getInput(randomNote, Hnetwork)
-    elif mood == "Sad":
-        for x in range(len(sadJson)):
-            if sadJson[x]["note"] == note:
-                firstNote_number.append(sadJson[x]["num"])
-        randomNote = firstNote_number[random.randint(0,len(firstNote_number))]
-        network_input = getInput(randomNote, Snetwork)
-    elif mood == "Relax":
-        for x in range(len(relaxJson)):
-            if relaxJson[x]["note"] == note:
-                firstNote_number.append(relaxJson[x]["num"])
-        randomNote = firstNote_number[random.randint(0,len(firstNote_number))]
-        network_input = getInput(randomNote, Rnetwork)
-    return network_input, randomNote
 
 def generateSong(pattern,mood,my_dict2):
     predictOutput = None
@@ -154,6 +124,7 @@ def generateSong(pattern,mood,my_dict2):
         elif mood == "Sad":
             model1 = Smodel
         elif mood == "Relax":
+            print("Gu get in relax la")
             model1 = Rmodel
         global graph
         with graph.as_default():
@@ -164,7 +135,7 @@ def generateSong(pattern,mood,my_dict2):
                 newPattern = genPattern
                 genPattern = []
                 for y in range(50-len(newPattern)):
-                    genPattern.append(-1)
+                    genPattern.append(0)
                 for y in newPattern:
                     genPattern.append(y)
             elif(len(genPattern) > 50):
@@ -173,6 +144,7 @@ def generateSong(pattern,mood,my_dict2):
                 prediction_input = numpy.reshape(genPattern, (1, len(genPattern), 1))
                 prediction = model1.predict(prediction_input, verbose = 0)
                 index=numpy.argmax(prediction,axis=1)
+                print(index[0])
                 result = my_dict2[index[0]]
                 prediction_output.append(result)
                 result=numpy.asarray(result)
@@ -257,7 +229,8 @@ def preData(rawData):
                 yoyo += 1
                 if(len(checkD) == 1):
                     listKey = list(checkD.values())
-                    predData.append(listKey[0][0])
+                    print(listKey[0])
+                    predData.append(listKey[0])
                 elif(len(checkD) > 1):
                     nearestDuration = []
                     checkDuration = 200
