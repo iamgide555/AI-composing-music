@@ -8,12 +8,18 @@
                 <a>Simple music</a>
               </router-link>
             </div>
-            <router-link to="/signup" v-if="!user">
-              <a>Sign up</a>
-            </router-link>
-            <router-link to="/login" v-if="!user">
-              <a>Login</a>
-            </router-link>
+            <ul class="menu-area">
+              <li>
+                <router-link to="/signup" v-if="!user">
+                  <a>Sign up</a>
+                </router-link>
+              </li>
+              <li>
+                <router-link to="/login" v-if="!user">
+                  <a>Login</a>
+                </router-link>
+              </li>
+            </ul>
           </div>
         </nav>
       </section>
@@ -61,11 +67,13 @@ html,body {
 /* Style the links inside the navigation bar */
 .topnav a {
   float: right;
+  display: block;
   color: #fff0f0;
   text-align: center;
   padding: 8px 12px;
   font-size: 18px;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  text-transform: uppercase;
 }
 
 /* Change the color of links on hover */
@@ -73,6 +81,11 @@ html,body {
   background-color: #ddd;
   color: black;
 }
+
+.topnav .icon {
+  display: none;
+}
+
 .logo {
   width: 13%;
   float: left;
@@ -80,6 +93,29 @@ html,body {
   color: #fff;
   font-size: 15px;
   text-align: left;
-  padding-left: 0px;
+  padding-left: 10px;
 }
+nav {
+    position: relative;
+    width: calc(100% - 60px);
+    margin: 0 auto;
+    padding: 10px 10px;
+    text-align: right;
+    padding-right: 2%;
+}
+
+.menu-area li {
+    display: inline-block;
+}
+
+
+.menu-area a:hover {
+    background: rgb(234, 240, 255);
+    color: rgb(19, 17, 22);
+}
+
+.menu-area a:hover:after {
+    transform: translateY(-50%) rotate(-35deg);
+}
+
 </style>
