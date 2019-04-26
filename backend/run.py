@@ -9,10 +9,12 @@ import json
 from music21 import *
 from music21.midi import *
 import random
+import os
 
 check = 0
 
 graph = tf.get_default_graph()
+
 
 #model
 Hmodel = None
@@ -114,7 +116,6 @@ def loadModel_jsonNote():
     #     Rnetwork.append(z)
         
     return Hmodel, Smodel, Rmodel, happyJson, sadJson, relaxJson, Hnetwork, Snetwork, Rnetwork, Hdict, Sdict, Rdict
-
 
 def generateSong(pattern,mood,my_dict2):
     predictOutput = None
@@ -337,8 +338,13 @@ def getMidi(prediction_output):
             output_notes.append(new_note)
         offset += predict_offset[x]
         midi_stream = stream.Stream(output_notes)
-    midi_stream.write('midi', fp='TestOutput.mid')
-    return "TestOutput.mid"
+
+    path, dirs, files = next(os.walk("./fileSong"))
+    file_count = len(files)
+    print(file_count)
+    file_name = './fileSong/testOutput'+ str(file_count) + '.mid'
+    midi_stream.write('midi', fp=file_name)
+    return file_name
         
 # Load everyData
 Hmodel, Smodel, Rmodel, happyJson, sadJson, relaxJson, Hnetwork, Snetwork, Rnetwork, Hdict, Sdict, Rdict = loadModel_jsonNote()
