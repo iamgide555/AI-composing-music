@@ -10,6 +10,7 @@ from music21 import *
 from music21.midi import *
 import random
 import os
+import pygame
 
 check = 0
 
@@ -77,7 +78,6 @@ def loadModel_jsonNote():
     with open("./NoteData/relaxNote.json") as f:
         relaxJson = json.load(f)
     Rdict = getDict(relaxJson)
-    print(len(Rdict))
     f.close()
 
     # #Load networkInput
@@ -338,11 +338,10 @@ def getMidi(prediction_output):
             output_notes.append(new_note)
         offset += predict_offset[x]
         midi_stream = stream.Stream(output_notes)
-
-    path, dirs, files = next(os.walk("./fileSong"))
+    path, dirs, files = next(os.walk('../frontend/static/fileSong'))
     file_count = len(files)
     print(file_count)
-    file_name = './fileSong/testOutput'+ str(file_count) + '.mid'
+    file_name = '../frontend/static/fileSong/testOutput'+ str(file_count) + '.mid'
     midi_stream.write('midi', fp=file_name)
     return file_name
         
@@ -397,6 +396,21 @@ def genSong():
         data = {"data": predictOutput}
         return jsonify(data)
     return fileName
+
+@app.route('/playSong',methods = ['POST','GET'])
+def playSong():
+    post_data = request.get_json()
+    print(post_data)
+    pygame.mixer.init()
+    pygame.mixer.music.load(post_data['fileName'])
+    pygame.mixer.music.play()
+    return "play song"
+
+@app.route('/stopSong',methods = ['POST','GET'])
+def stopSong():
+    post_data = request.get_json()
+    pygame.mixer.music.stop()
+    return "stop"
     # allNote =  ["A1","A2","A3","A4","A5","A6","A7","A8",
     #             "B1","B2","B3","B4","B5","B6","B7","B8",
     #             "C1","C2","C3","C4","C5","C6","C7","C8",
