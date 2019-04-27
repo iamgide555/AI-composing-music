@@ -14,8 +14,10 @@
                     <div class="overlay"></div>
                 </div>
                 <br>
-            <button v-on:click=startrecord>Record</button> <button v-on:click=stoprecord>Stop</button>  <button v-on:click=resetNote>Reset</button> <br> 
-            <button v-on:click=gensong>Generate Song</button> <br> <button v-if="fileName != '' && notes != []" v-on:click=playSong>Play</button>  <button v-if="fileName != ''" v-on:click=stopSong>Stop</button>
+            <button v-on:click=startrecord>Record</button> <button v-on:click=stoprecord>Stop</button>  <button v-on:click=resetNote>Reset</button> <br>
+            <button v-on:click=gensong>Generate Song</button> <br> <button v-if="fileName != ''" v-on:click=playSong>Play</button>
+            <button v-if="fileName != ''" v-on:click=pauseSong>Pause</button>
+            <button v-if="fileName != ''" v-on:click=stopSong>Stop</button>
              <br>
             </div>
         </div>
@@ -123,6 +125,16 @@ export default {
         }
     },
     methods: {
+        pauseSong() {
+            const path = 'http://localhost:5000/pauseSong'
+            axios.post(path)
+                .then((res) =>{
+                    console.log(res.data)
+                })
+                .catch((error) => {
+                    console.log(error)
+                })
+        },
         stopSong() {
             const path = 'http://localhost:5000/stopSong'
             axios.post(path)
@@ -151,6 +163,7 @@ export default {
             this.velocities = []
             this.duration = []
             this.offset = []
+            this.fileName = ''
         },
         gensong() {
             const path = 'http://localhost:5000/genSong'
