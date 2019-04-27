@@ -6,7 +6,7 @@ import Signup from '@/components/Signup'
 import Test from '@/components/Test'
 import Test2 from '@/components/Test2'
 import Generate from '@/components/Generate'
-import Song from '@/components/Song'
+import Example from '@/components/Example'
 
 Vue.use(Router)
 
@@ -44,9 +44,9 @@ export default new Router({
       component: Generate
     },
     {
-      path: '/Song',
-      name: 'Song',
-      component: Song
+      path: '/example',
+      name: 'Example',
+      component: Example
     }
   ]
 })

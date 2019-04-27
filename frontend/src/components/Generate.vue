@@ -4,17 +4,20 @@
         <div class="right">
             <div class="containerOuter">
                 <div class="container">
-                    <input type="radio" class="hidden" id="input1" name="inputs" value="Happy" v-model="mood"> 
+                    <input type="radio" class="hidden" id="input1" name="inputs" v-model="mood" value="Happy">
                     <label class="entry" for="input1"><div class="circle"></div><div class="entry-label">Happy</div></label>
-                    <input type="radio" class="hidden" id="input2" name="inputs" value="Sad" v-model="mood">
+                    <input type="radio" class="hidden" id="input2" name="inputs" v-model="mood" value="Sad">
                     <label class="entry" for="input2"><div class="circle"></div><div class="entry-label" >Sad</div></label>
-                    <input type="radio" class="hidden" id="input3" name="inputs" value="Relax" v-model="mood">
+                    <input type="radio" class="hidden" id="input3" name="inputs" v-model="mood" value="Relax">
                     <label class="entry" for="input3" ><div class="circle"></div><div class="entry-label">Relax</div></label>
                     <div class="highlight"></div>
                     <div class="overlay"></div>
                 </div>
                 <br>
-                <button v-on:click=startrecord>Record</button> <button v-on:click=stoprecord>Stop</button> <button v-on:click=gensong><router-link to="/song">Generate Song</router-link></button> <br>
+            <button v-on:click=startrecord>Record</button> <button v-on:click=stoprecord>Stop</button>  <button v-on:click=resetNote>Reset</button> <br>
+            <button v-on:click=gensong>Generate Song</button> <br> <button v-if="fileName != ''" v-on:click=playSong>Play</button>
+            <button v-if="fileName != ''" v-on:click=pauseSong>Pause</button>
+            <button v-if="fileName != ''" v-on:click=stopSong>Stop</button>
              <br>
             </div>
         </div>
@@ -88,7 +91,6 @@
             </div>
         </div>
         {{midiController}} <br> {{notes.length}}:{{velocities.length}}:{{duration.length}}:{{offset.length}} <br>
-        Note : {{notes}} <br> Velocity : {{velocities}} <br> Duration : {{duration}} <br> Offset : {{offset}}
     </div>
 </template>
 
@@ -118,9 +120,50 @@ export default {
             // Chord: C,Cm,D,Dm,E,Em,F,Fm,G,Gm,A,Am,B,Bm
             chordList: {'0.4.7':['C','E','G'],'0.3.7':['C','D#','G'],'2.6.7':['D','F#','A'],'2.5.7':['D','F','A'],'4.8.11':['E','G#','B'],'4.7.11':['E','G','B'],'5.9':['F','A','C'],'5.8':['F','G#','C'],'7.11.2':['G','B','D'],'7.10.2':['G','A#','D'],'9.1.4':['A','C#','E'],'9.0.4':['A','C','E'],'11.3.6':['B','D#','F#'],'11.2.6':['B','D','F#']},
             // chordList: {['C','E','G']:'0.4.7',['C','D#','G']:'0.3.7',['D','F#','A']:'2.6.7',['D','F','A']:'2.5.7',['E','G#','B']:'4.8.11',['E','G','B']:'4.7.11',['F','A','C']:'5.9',['F','G#','C']:'5.8',['G','B','D']:'7.11.2',['G','A#','D']:'7.10.2',['A','C#','E']:'9.1.4',['A','C','E']:'9.0.4',['B','D#','F#']:'11.3.6',['B','D','F#']:'11.2.6'},
+            fileName: '',
         }
     },
     methods: {
+        pauseSong() {
+            const path = 'http://localhost:5000/pauseSong'
+            axios.post(path)
+                .then((res) =>{
+                    console.log(res.data)
+                })
+                .catch((error) => {
+                    console.log(error)
+                })
+        },
+        stopSong() {
+            const path = 'http://localhost:5000/stopSong'
+            axios.post(path)
+                .then((res) =>{
+                    console.log(res.data)
+                })
+                .catch((error) => {
+                    console.log(error)
+                })
+        },
+        playSong() {
+            const path = 'http://localhost:5000/playSong'
+            const payload = {
+                fileName: this.fileName
+            }
+            axios.post(path,payload)
+                .then((res) =>{
+                    console.log(res.data)
+                })
+                .catch((error) => {
+                    console.log(error)
+                })
+        },
+        resetNote() {
+            this.notes = []
+            this.velocities = []
+            this.duration = []
+            this.offset = []
+            this.fileName = ''
+        },
         gensong() {
             const path = 'http://localhost:5000/genSong'
             const payload = {
@@ -132,7 +175,7 @@ export default {
             }
             axios.post(path,payload)
                 .then((res) =>{
-                    console.log(res)
+                    this.fileName = res.data
                 })
                 .catch((error) => {
                     console.log(error)
