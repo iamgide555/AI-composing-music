@@ -4,17 +4,17 @@
         <div class="right">
             <div class="containerOuter">
                 <div class="container">
-                    <input type="radio" class="hidden" id="input1" name="inputs" v-model="mood" native-value="Happy">
+                    <input type="radio" class="hidden" id="input1" name="inputs" value="Happy" v-model="mood"> 
                     <label class="entry" for="input1"><div class="circle"></div><div class="entry-label">Happy</div></label>
-                    <input type="radio" class="hidden" id="input2" name="inputs" v-model="mood" native-value="Sad">
+                    <input type="radio" class="hidden" id="input2" name="inputs" value="Sad" v-model="mood">
                     <label class="entry" for="input2"><div class="circle"></div><div class="entry-label" >Sad</div></label>
-                    <input type="radio" class="hidden" id="input3" name="inputs" v-model="mood" native-value="Relax">
+                    <input type="radio" class="hidden" id="input3" name="inputs" value="Relax" v-model="mood">
                     <label class="entry" for="input3" ><div class="circle"></div><div class="entry-label">Relax</div></label>
                     <div class="highlight"></div>
                     <div class="overlay"></div>
                 </div>
                 <br>
-            <button v-on:click=startrecord>Record</button> <button v-on:click=stoprecord>Stop</button> <button v-on:click=gensong><router-link to="/song">Generate Song</router-link></button> <br>
+                <button v-on:click=startrecord>Record</button> <button v-on:click=stoprecord>Stop</button> <button v-on:click=gensong><router-link to="/song">Generate Song</router-link></button> <br>
              <br>
             </div>
         </div>
