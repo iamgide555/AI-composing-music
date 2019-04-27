@@ -176,8 +176,7 @@ export default {
             }
             axios.post(path,payload)
                 .then((res) =>{
-                    this.fileName = res.data
-                    console.log(this.fileName)
+                    console.log(res)
                 })
                 .catch((error) => {
                     console.log(error)
@@ -379,7 +378,6 @@ export default {
     },
     computed: {
          midiController() {
-             console.log(this.mood)
             navigator.requestMIDIAccess()
                 .then(this.onMIDISuccess, this.onMIDIFailure);
          },
