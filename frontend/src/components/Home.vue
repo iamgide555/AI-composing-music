@@ -5,6 +5,7 @@
     <router-link to="/generate">
       <a>Generate</a>
     </router-link>
+     <br>
 
   </div>
 </template>

@@ -115,7 +115,7 @@ def loadModel_jsonNote():
     #         z.append(y)
     #     Rnetwork.append(z)
         
-    return Hmodel, Smodel, Rmodel, happyJson, sadJson, relaxJson, Hnetwork, Snetwork, Rnetwork, Hdict, Sdict, Rdict
+    return Hmodel, Smodel, Rmodel, Hdict, Sdict, Rdict
 
 def generateSong(pattern,mood,my_dict2):
     predictOutput = None
@@ -346,7 +346,7 @@ def getMidi(prediction_output):
     return file_name
         
 # Load everyData
-Hmodel, Smodel, Rmodel, happyJson, sadJson, relaxJson, Hnetwork, Snetwork, Rnetwork, Hdict, Sdict, Rdict = loadModel_jsonNote()
+Hmodel, Smodel, Rmodel, Hdict, Sdict, Rdict = loadModel_jsonNote()
 print("Server Start!!")
 
 # instantiate the app
