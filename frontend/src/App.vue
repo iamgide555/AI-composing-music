@@ -56,9 +56,13 @@ export default {
 
 html,body {
   height: 100%;
+  min-height:100%;
   margin: 0;
   padding: 0;
-  background-image: linear-gradient(#24234D,#241428);
+  background-attachment:fixed;
+  background-origin: initial;
+  background-repeat:no-repeat;
+  background: -webkit-linear-gradient(#24234D 0%,#241428 100%); 
 }
 .topnav {
   background-color: rgba(4, 4, 39, 0.527);

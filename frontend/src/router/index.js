@@ -7,6 +7,7 @@ import Test from '@/components/Test'
 import Test2 from '@/components/Test2'
 import Generate from '@/components/Generate'
 import Example from '@/components/Example'
+import testTee from '@/components/testTee'
 
 Vue.use(Router)
 
@@ -47,6 +48,11 @@ export default new Router({
       path: '/example',
       name: 'Example',
       component: Example
+    },
+    {
+      path: '/testTee',
+      name: 'testtt',
+      component: testTee
     }
   ]
 })
