@@ -5,7 +5,7 @@
           <div class="topnav">
             <div class="logo">
               <router-link to="/">
-                <a>Simple music</a>
+                <img src="./assets/logo.png">Simple Music
               </router-link>
             </div>
             <ul class="menu-area">
@@ -91,7 +91,7 @@ html,body {
 }
 
 .logo {
-  width: 13%;
+  width: 10%;
   float: left;
   text-transform: uppercase;
   color: #fff;
