@@ -14,14 +14,12 @@
                     <div class="overlay"></div>
                 </div>
                 <br>
-            <router-link to="/example">
-                <a>Example</a> <br>
-            </router-link>
-            <button v-on:click=startrecord>Record</button> <button v-on:click=stoprecord>Stop</button>  <button v-on:click=resetNote>Reset</button> <br>
-            <button v-on:click=gensong>Generate Song</button> <br> <button v-if="fileName != ''" v-on:click=playSong>Play</button>
-            <button v-if="fileName != ''" v-on:click=pauseSong>Pause</button>
-            <button v-if="fileName != ''" v-on:click=stopSong>Stop</button>
-             <br>
+                <button v-on:click=startrecord>Record</button> <button v-on:click=stoprecord>Stop</button>  <button v-on:click=resetNote>Reset</button> <br>
+                <button v-on:click=gensong>Generate Song</button> <br>
+                <button v-if="fileName != ''" v-on:click=playSong>Play</button>
+                <button v-if="fileName != ''" v-on:click=pauseSong>Pause</button>
+                <button v-if="fileName != ''" v-on:click=stopSong>Stop</button>
+                <br>
             </div>
         </div>
         <div class="bottom">
@@ -56,13 +54,6 @@
                     <div id="a74d" class="w" @mousedown="start('a74')" @mouseup="stop('a74')" style="background-image: linear-gradient(0deg, rgb(0, 0, 0) -20px, rgb(255, 255, 255) 8%);"></div>
                     <div id="a75d" class="w" @mousedown="start('a75')" @mouseup="stop('a75')" style="background-image: linear-gradient(0deg, rgb(0, 0, 0) -20px, rgb(255, 255, 255) 8%);"></div>
                     <div id="a76d" class="w" @mousedown="start('a76')" @mouseup="stop('a76')" style="background-image: linear-gradient(0deg, rgb(0, 0, 0) -20px, rgb(255, 255, 255) 8%);"></div>
-                    <div id="a90d" class="w" @mousedown="start('a90')" @mouseup="stop('a90')" style="background-image: linear-gradient(0deg, rgb(0, 0, 0) -20px, rgb(255, 255, 255) 8%);"></div>
-                    <div id="a88d" class="w" @mousedown="start('a88')" @mouseup="stop('a88')" style="background-image: linear-gradient(0deg, rgb(0, 0, 0) -20px, rgb(255, 255, 255) 8%);"></div>
-                    <div id="a67d" class="w" @mousedown="start('a67')" @mouseup="stop('a67')" style="background-image: linear-gradient(0deg, rgb(0, 0, 0) -20px, rgb(255, 255, 255) 8%);"></div>
-                    <div id="a86d" class="w" @mousedown="start('a86')" @mouseup="stop('a86')"></div>
-                    <div id="a66d" class="w" @mousedown="start('a66')" @mouseup="stop('a66')"></div>
-                    <div id="a78d" class="w" @mousedown="start('a78')" @mouseup="stop('a78')"></div>
-                    <div id="a77d" class="w" @mousedown="start('a77')" @mouseup="stop('a77')"></div>
                 </div>
                 <div id="black">
                     <div id="b49d" class="b" @mousedown="start('b49')" @mouseup="stop('b49')" style="left: 26px;"></div>
@@ -85,11 +76,6 @@
                     <div id="b71d" class="b" @mousedown="start('b71')" @mouseup="stop('b71')" style="left: 502px; background-image: linear-gradient(0deg, rgb(200, 200, 200) -10px, rgb(15, 15, 15) 12%);"></div>
                     <div id="b72d" class="b" @mousedown="start('b72')" @mouseup="stop('b72')" style="left: 516px; background-image: linear-gradient(0deg, rgb(200, 200, 200) -10px, rgb(15, 15, 15) 12%);"></div>
                     <div id="b74d" class="b" @mousedown="start('b74')" @mouseup="stop('b74')" style="left: 530px; background-image: linear-gradient(0deg, rgb(200, 200, 200) -10px, rgb(15, 15, 15) 12%);"></div>
-                    <div id="b76d" class="b" @mousedown="start('b76')" @mouseup="stop('b76')" style="left: 578px; background-image: linear-gradient(0deg, rgb(200, 200, 200) -10px, rgb(15, 15, 15) 12%);"></div>
-                    <div id="b90d" class="b" @mousedown="start('b90')" @mouseup="stop('b90')" style="left: 592px; background-image: linear-gradient(0deg, rgb(200, 200, 200) -10px, rgb(15, 15, 15) 12%);"></div>
-                    <div id="b67d" class="b" @mousedown="start('b67')" @mouseup="stop('b67')" style="left: 640px; background-image: linear-gradient(0deg, rgb(200, 200, 200) -10px, rgb(15, 15, 15) 12%);"></div>
-                    <div id="b86d" class="b" @mousedown="start('b86')" @mouseup="stop('b86')" style="left: 654px;"></div>
-                    <div id="b66d" class="b" @mousedown="start('b66')" @mouseup="stop('b66')" style="left: 668px;"></div>
                 </div>
             </div>
         </div>
@@ -393,17 +379,37 @@ export default {
     from {filter: brightness(50%);}
     to {filter: brightness(100%);}
 }
-body {
-  background-image: linear-gradient(#24234D,#241428);
+html,body {
+  background-attachment:fixed;
+  background-origin: initial;
+  background-repeat:no-repeat;
+  min-height: 106%;
+  background: -webkit-linear-gradient(#24234D 0%,#241428 100%); 
   font-family: "Open Sans", sans-serif;
 }
-
+button {
+  background-color: #24234D;
+  border: rgb(220, 212, 243) solid 1px;
+  padding: 8px 18px;
+  margin: 4px 2px;
+  color: white;
+  border-radius: 5px;
+  font-size: bold 12px;
+  transition-duration: 0.2s;
+  cursor: pointer;
+}
+button:hover {
+  background-color: rgb(220, 212, 243);
+  color: rgb(3, 3, 3);
+  border: #0f0f0f 1px solid; 
+}
 #piano {
     z-index: 3;
     margin: 50px auto;
-    width: 1236px;
+    width: 900px;
     height: 220px;
     position: absolute;
+    padding-left: 140px;
 
 }
 .w,
@@ -413,25 +419,13 @@ input[type="button"] {
     cursor: pointer;
 }
 .text,
-#white,
-#btns {
+#white
+ {
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
     border-radius: 5px;
 }
-#btns {
-    position: absolute;
-    z-index: 4;
-    margin: 0 auto;
-    margin-top: 3px;
-    margin-left: 393px;
-    padding-left: 40px;
-    width: 450px;
-    height: 40px;
-    border: 1px solid #303030;
-    background-color: #404040;
-    font-size: 20px;
-}
+
 
 .text {
     float: left;
@@ -440,16 +434,16 @@ input[type="button"] {
 #white {
     z-index: 1;
     padding-left: 10px;
-    width: 1236px;
+    width: 1006px;
     height: 220px;
     background-image: linear-gradient(#454545 -10px,#000 200px);
 }
 
 #black {
     position: relative;
-    top: -210px;
+    top: -200px;
     padding-left: 9px;
-    width: 1236px;
+    width: 900px;
 }
 
 .w,
@@ -508,11 +502,13 @@ div.right {
 .hidden {
   display: none;
 }
+
 .entry {
   height: 25px;
   position: absolute;
   width: 160px;
 }
+
 .entry:nth-child(2) {
   left: 10px;
   top: 10px;

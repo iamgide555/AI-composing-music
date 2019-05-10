@@ -15,7 +15,7 @@
                 </div>
                 <br>
                 <button v-on:click=startrecord>Record</button> <button v-on:click=stoprecord>Stop</button>  <button v-on:click=resetNote>Reset</button> <br>
-                <button v-on:click=gensong>Generate Song</button> <br> 
+                <button v-on:click=gensong>Generate Song</button> <br>
                 <button v-if="fileName != ''" v-on:click=playSong>Play</button>
                 <button v-if="fileName != ''" v-on:click=pauseSong>Pause</button>
                 <button v-if="fileName != ''" v-on:click=stopSong>Stop</button>
@@ -76,7 +76,6 @@
                     <div id="b71d" class="b" @mousedown="start('b71')" @mouseup="stop('b71')" style="left: 502px; background-image: linear-gradient(0deg, rgb(200, 200, 200) -10px, rgb(15, 15, 15) 12%);"></div>
                     <div id="b72d" class="b" @mousedown="start('b72')" @mouseup="stop('b72')" style="left: 516px; background-image: linear-gradient(0deg, rgb(200, 200, 200) -10px, rgb(15, 15, 15) 12%);"></div>
                     <div id="b74d" class="b" @mousedown="start('b74')" @mouseup="stop('b74')" style="left: 530px; background-image: linear-gradient(0deg, rgb(200, 200, 200) -10px, rgb(15, 15, 15) 12%);"></div>
-                
                 </div>
             </div>
         </div>
