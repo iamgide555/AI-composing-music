@@ -80,7 +80,8 @@
         </div>
         {{midiController}} <br> {{notes.length}}:{{velocities.length}}:{{duration.length}}:{{offset.length}} <br>
         {{currentNote}}<br>
-        Note: {{notes}} <br> Velocity: {{velocities}} <br> Duration: {{duration}} <br> Offset: {{offset}}
+        Note: {{notes}} <br> Velocity: {{velocities}} <br> Duration: {{duration}} <br> Offset: {{offset}} <br>
+        TimeUsed: {{timeUsed}} <br> WholeNote: {{wholeNote}}
     </div>
 </template>
 
@@ -91,9 +92,9 @@ import axios from 'axios';
 export default {
     data() {
         return {
-            testData: [],
             indexNote:0,
             checkRecord: 0,
+            chordOrnot: null
             notes: [],
             velocities: [],
             duration: [],
@@ -143,6 +144,9 @@ export default {
             this.velocities = []
             this.duration = []
             this.offset = [1]
+            this.startTime = []
+            this.stopTime = []
+            this.timeUsed = []
             this.fileName = ''
         },
         gensong() {
@@ -213,14 +217,32 @@ export default {
         checkChord(currentNote){
             var chordCheck = 0
             var chordFromNote = []
-            for(var i=0;i<currentNote.length;i++){
-                chordFromNote.push(currentNote[i].slice(0,-1))
+            var noteFromChord = []
+            var notee = currentNote.sort()
+            var currentIndex = []
+            for(var i=0;i<notee.length;i++){
+                chordFromNote.push(notee[i].slice(0,-1))
+                currentIndex.push(notee[i].slice(-1))
             }
             var a = chordFromNote.sort()
+            var map = new Object()
             for(var x in this.chordList){
-                var b = this.chordList[x].sort()
-                if(a[0] == b[0] && a[1] == b[1] && a[2] == b[2]){
-                    return [x,currentNote]
+                if(this.chordList[x].every(val => a.includes(val))){
+                    for(var i = 0; i < currentIndex.length; i++) {
+                        if(map[currentIndex[i]] != null) {
+                            map[currentIndex[i]] += 1;
+                        } else {
+                            map[currentIndex[i]] = 1;
+                            }
+                        }
+                    for(var y in map){
+                        if(map[y] == 3){
+                            for(var z in this.chordList[x]){
+                                noteFromChord.push(this.chordList[x][z]+y)
+                            }
+                        }
+                    }
+                    return [x, noteFromChord]
                 }
             }
             return chordCheck
@@ -242,6 +264,22 @@ export default {
             if(command == 144){
                 var keySound = this.playSound(this.noteList[note])
                 this.pianoclick(keySound)
+                this.currentNote.push(this.noteList[note])
+            }
+            if(this.currentNote.length >= 3){
+                this.chordOrnot = this.checkChord(this.currentNote)
+                console.log(this.chordOrnot)
+                // var PlayerOne = ['C','E','G','D'];
+                // var PlayerTwo = ['C','E','G'];
+                // console.log(PlayerTwo.every(val => PlayerOne.includes(val)))
+            }
+            if(command == 128){
+                for( var i = 0; i < this.currentNote.length; i++){ 
+                        if ( this.currentNote[i] == this.noteList[note]) {
+                            this.currentNote.splice(i, 1); 
+                            i--;
+                        }
+                    }
             }
             if(this.checkRecord == 1){
                 switch (command) {
@@ -249,7 +287,6 @@ export default {
                         this.wholeNote[this.indexNote] = this.noteList[note]
                         this.notes[this.indexNote] = this.noteList[note]
                         this.velocities[this.indexNote] = velocity
-                        this.currentNote.push(this.noteList[note])
                         this.noteOn()
                         if(this.indexNote > 0){
                             this.offset[this.indexNote] = ((this.startTime[this.indexNote]-this.startTime[this.indexNote-1])/1000)*barCalculate
@@ -263,12 +300,6 @@ export default {
                                 this.wholeNote[i] = "Used"
                                 this.duration[i] = (this.timeUsed[i])*barCalculate
                                 break;                            
-                            }
-                        }
-                        for( var i = 0; i < this.currentNote.length; i++){ 
-                            if ( this.currentNote[i] == this.noteList[note]) {
-                                this.currentNote.splice(i, 1); 
-                                i--;
                             }
                         }
                         break;
