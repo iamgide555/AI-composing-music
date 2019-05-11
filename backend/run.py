@@ -62,20 +62,20 @@ def loadModel_jsonNote():
         perplexity = backend.pow(2.0, cross_entropy)
         return perplexity
     #Load Model
-    Hmodel = load_model('./Model_moods/model_happy_padding_1.h5',custom_objects={'perplexity': perplexity})
-    Smodel = load_model('./Model_moods/Fmodel_sad.h5',custom_objects={'perplexity': perplexity})
-    Rmodel = load_model('./Model_moods/Fmodel_relax.h5',custom_objects={'perplexity': perplexity})
+    Hmodel = load_model('./Model_moods/model_happy_more_padding_1.h5',custom_objects={'perplexity': perplexity})
+    Smodel = load_model('./Model_moods/model_sad_more_padding_1.h5',custom_objects={'perplexity': perplexity})
+    Rmodel = load_model('./Model_moods/model_relax_more_padding_1.h5',custom_objects={'perplexity': perplexity})
     
     #Load Note
-    with open("./NoteData/happy_dict.json") as f:
+    with open("./NoteData/happy_dict_morePedding.json") as f:
         happyJson = json.load(f)
     Hdict = getDict(happyJson)
     f.close()
-    with open("./NoteData/sadNote.json") as f:
+    with open("./NoteData/sad_dict_morePedding.json") as f:
         sadJson = json.load(f)
     Sdict = getDict(sadJson)
     f.close()
-    with open("./NoteData/relaxNote.json") as f:
+    with open("./NoteData/relax_dict_morePedding.json") as f:
         relaxJson = json.load(f)
     Rdict = getDict(relaxJson)
     f.close()
