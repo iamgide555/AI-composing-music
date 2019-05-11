@@ -94,7 +94,7 @@ export default {
         return {
             indexNote:0,
             checkRecord: 0,
-            chordOrnot: null
+            chordOrnot: null,
             notes: [],
             velocities: [],
             duration: [],
