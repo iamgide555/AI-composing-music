@@ -78,6 +78,7 @@
                 </div>
             </div>
         </div>
+        <b-loading :is-full-page="true" :active.sync="loadingPage" :can-cancel="true"></b-loading>
         {{midiController}} <br> {{notes.length}}:{{velocities.length}}:{{duration.length}}:{{offset.length}} <br>
         Current Note: {{currentNote}}<br>
         Note: {{notes}} <br> Velocity: {{velocities}} <br> Duration: {{duration}} <br> Offset: {{offset}} <br>
@@ -91,6 +92,7 @@ import axios from 'axios';
 export default {
     data() {
         return {
+            loadingPage: false,
             indexNote:0,
             checkRecord: 0,
             chordOrnot: null,
@@ -157,9 +159,13 @@ export default {
                 offset: this.offset,
                 mood: this.mood,
             }
+            this.loadingPage = true
             axios.post(path,payload)
                 .then((res) =>{
                     this.fileName = res.data
+                    if(this.fileName =! null){
+                        this.loadingPage = false
+                    }
                 })
                 .catch((error) => {
                     console.log(error)
