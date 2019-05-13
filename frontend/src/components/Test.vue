@@ -79,9 +79,8 @@
             </div>
         </div>
         {{midiController}} <br> {{notes.length}}:{{velocities.length}}:{{duration.length}}:{{offset.length}} <br>
-        {{currentNote}}<br>
+        Current Note: {{currentNote}}<br>
         Note: {{notes}} <br> Velocity: {{velocities}} <br> Duration: {{duration}} <br> Offset: {{offset}} <br>
-        TimeUsed: {{timeUsed}} <br> WholeNote: {{wholeNote}}
     </div>
 </template>
 
@@ -184,6 +183,7 @@ export default {
                     }
                 }
                 var message = {'data':[144,noteto,60]}
+                console.log("hi")
                 this.getMIDIMessage(message)
             }
         },
@@ -442,7 +442,7 @@ input[type="button"] {
 }
 
 .fade_delay{
-    animation: fading 1000ms;
+    animation: fading 2000ms;
 }
 
 .b {

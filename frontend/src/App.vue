@@ -5,7 +5,7 @@
           <div class="topnav">
             <div class="logo">
               <router-link to="/">
-                <img src="./assets/logo.png">Simple Music
+                <img src="./assets/logo.png">
               </router-link>
             </div>
             <ul class="menu-area">
@@ -18,6 +18,10 @@
                 <router-link to="/login" v-if="!user">
                   <a>Login</a>
                 </router-link>
+              </li>
+              <div v-if="user">Welcome {{$store.state.user.username}}</div>
+              <li v-on:click="logout" v-if="user">
+                <a>Logout</a>
               </li>
             </ul>
           </div>

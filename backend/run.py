@@ -125,7 +125,6 @@ def generateSong(pattern,mood,my_dict2):
         elif mood == "Sad":
             model1 = Smodel
         elif mood == "Relax":
-            print("Gu get in relax la")
             model1 = Rmodel
         global graph
         with graph.as_default():
@@ -390,7 +389,8 @@ def genSong():
         print(usedData)
         predictOutput = generateSong(usedData,mood,my_dict2)
         fileName = getMidi(predictOutput)
-        print(predictOutput)
+        for x in predictOutput:
+            print(x)
     if request.method == 'GET':
         print(predictOutput)
         data = {"data": predictOutput}

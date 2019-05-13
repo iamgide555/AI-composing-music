@@ -17,7 +17,6 @@
                 <button v-on:click=startrecord>Record</button> <button v-on:click=stoprecord>Stop</button>  <button v-on:click=resetNote>Reset</button> <br>
                 <button v-on:click=gensong>Generate Song</button> <br>
                 <button v-if="fileName != ''" v-on:click=playSong>Play</button>
-                <button v-if="fileName != ''" v-on:click=pauseSong>Pause</button>
                 <button v-if="fileName != ''" v-on:click=stopSong>Stop</button>
                 <br>
             </div>
@@ -80,6 +79,8 @@
             </div>
         </div>
         {{midiController}} <br> {{notes.length}}:{{velocities.length}}:{{duration.length}}:{{offset.length}} <br>
+        Current Note: {{currentNote}}<br>
+        Note: {{notes}} <br> Velocity: {{velocities}} <br> Duration: {{duration}} <br> Offset: {{offset}} <br>
     </div>
 </template>
 
@@ -90,39 +91,28 @@ import axios from 'axios';
 export default {
     data() {
         return {
+            indexNote:0,
             checkRecord: 0,
+            chordOrnot: null,
             notes: [],
             velocities: [],
             duration: [],
             offset: [1],
             mood: '',
             currentNote: [],
+            wholeNote: [],
             timeUsed: [],
             startTime: [],
             stopTime: [],
-            currentVelocity: [],
-            offsetCalcu: [],
-            allNote : {36: 'C1', 48: 'C2', 60: 'C3', 72: 'C4', 37: 'C#1', 49: 'C#2', 61: 'C#3', 73: 'C#4', 38: 'D1', 50: 'D2', 62: 'D3', 74: 'D4', 39: 'D#1', 51: 'D#2', 63: 'D#3', 75: 'D#4', 40: 'E1', 52: 'E2', 64: 'E3', 76: 'E4', 41: 'F1', 53: 'F2', 65: 'F3', 77: 'F4', 42: 'F#1', 54: 'F#2', 66: 'F#3', 78: 'F#4', 43: 'G1', 55: 'G2', 67: 'G3', 79: 'G4', 44: 'G#1', 56: 'G#2', 68: 'G#3', 80: 'G#4', 45: 'A1', 57: 'A2', 69: 'A3', 81: 'A4', 46: 'A#1', 58: 'A#2', 70: 'A#3', 82: 'A#4', 47: 'B1', 59: 'B2', 71: 'B3', 83: 'B4', 84: 'C5', '0.4.7': '0.4.7', '0.3.7': '0.3.7', '2.6.7': '2.6.7', '2.5.7': '2.5.7', '4.8.11': '4.8.11', '4.7.11': '4.7.11', '5.9':'5.9','5.8':'5.8','7.11.2':'7.11.2','7.10.2':'7.10.2','9.1.4':'9.1.4','9.0.4':'9.0.4','11.3.6':'11.3.6','11.2.6':'11.2.6'},
-            checkClick: false,
-            chordOrnot: 0,
-            noteList: {'a49':'C1','a50':'D1','a51':'E1','a52':'F1','a53':'G1','a54':'A1','a55':'B1','a56':'C2','a57':'D2','a48':'E2','a81':'F2','a87':'G2','a69':'A2','a82':'B2','a84':'C3','a89':'D3','a85':'E3','a73':'F3','a79':'G3','a80':'A3','a65':'B3','a83':'C4','a68':'D4','a70':'E4','a71':'F4','a72':'G4','a74':'A4','a75':'B4','a76':'C5','a90':'D5','a88':'E5','a67':'F5','a86':'G5','a66':'A5','a78':'B5','a77':'C6','b49':'C#1','b50':'D#1','b52':'F#1','b53':'G#1','b54':'A#1','b56':'C#2' ,'b57':'D#2','b81':'F#2','b87':'G#2','b69':'A#2','b84':'C#3','b89':'D#3','b73':'F#3','b79':'G#3','b80':'A#3','b83':'C#4','b68':'D#4','b71':'F#4','b72':'G#4','b74':'A#4','b76':'C#5','b90':'D#5','b67':'F#5','b86':'G#5','b66':'A#5'},
+            noteSound: {'a49':'C1','a50':'D1','a51':'E1','a52':'F1','a53':'G1','a54':'A1','a55':'B1','a56':'C2','a57':'D2','a48':'E2','a81':'F2','a87':'G2','a69':'A2','a82':'B2','a84':'C3','a89':'D3','a85':'E3','a73':'F3','a79':'G3','a80':'A3','a65':'B3','a83':'C4','a68':'D4','a70':'E4','a71':'F4','a72':'G4','a74':'A4','a75':'B4','a76':'C5','a90':'D5','a88':'E5','a67':'F5','a86':'G5','a66':'A5','a78':'B5','a77':'C6','b49':'C#1','b50':'D#1','b52':'F#1','b53':'G#1','b54':'A#1','b56':'C#2' ,'b57':'D#2','b81':'F#2','b87':'G#2','b69':'A#2','b84':'C#3','b89':'D#3','b73':'F#3','b79':'G#3','b80':'A#3','b83':'C#4','b68':'D#4','b71':'F#4','b72':'G#4','b74':'A#4','b76':'C#5','b90':'D#5','b67':'F#5','b86':'G#5','b66':'A#5'},
             // Chord: C,Cm,D,Dm,E,Em,F,Fm,G,Gm,A,Am,B,Bm
             chordList: {'0.4.7':['C','E','G'],'0.3.7':['C','D#','G'],'2.6.7':['D','F#','A'],'2.5.7':['D','F','A'],'4.8.11':['E','G#','B'],'4.7.11':['E','G','B'],'5.9':['F','A','C'],'5.8':['F','G#','C'],'7.11.2':['G','B','D'],'7.10.2':['G','A#','D'],'9.1.4':['A','C#','E'],'9.0.4':['A','C','E'],'11.3.6':['B','D#','F#'],'11.2.6':['B','D','F#']},
+            noteList : {36: 'C1', 48: 'C2', 60: 'C3', 72: 'C4', 37: 'C#1', 49: 'C#2', 61: 'C#3', 73: 'C#4', 38: 'D1', 50: 'D2', 62: 'D3', 74: 'D4', 39: 'D#1', 51: 'D#2', 63: 'D#3', 75: 'D#4', 40: 'E1', 52: 'E2', 64: 'E3', 76: 'E4', 41: 'F1', 53: 'F2', 65: 'F3', 77: 'F4', 42: 'F#1', 54: 'F#2', 66: 'F#3', 78: 'F#4', 43: 'G1', 55: 'G2', 67: 'G3', 79: 'G4', 44: 'G#1', 56: 'G#2', 68: 'G#3', 80: 'G#4', 45: 'A1', 57: 'A2', 69: 'A3', 81: 'A4', 46: 'A#1', 58: 'A#2', 70: 'A#3', 82: 'A#4', 47: 'B1', 59: 'B2', 71: 'B3', 83: 'B4', 84: 'C5', '0.4.7': '0.4.7', '0.3.7': '0.3.7', '2.6.7': '2.6.7', '2.5.7': '2.5.7', '4.8.11': '4.8.11', '4.7.11': '4.7.11', '5.9':'5.9','5.8':'5.8','7.11.2':'7.11.2','7.10.2':'7.10.2','9.1.4':'9.1.4','9.0.4':'9.0.4','11.3.6':'11.3.6','11.2.6':'11.2.6'},
             // chordList: {['C','E','G']:'0.4.7',['C','D#','G']:'0.3.7',['D','F#','A']:'2.6.7',['D','F','A']:'2.5.7',['E','G#','B']:'4.8.11',['E','G','B']:'4.7.11',['F','A','C']:'5.9',['F','G#','C']:'5.8',['G','B','D']:'7.11.2',['G','A#','D']:'7.10.2',['A','C#','E']:'9.1.4',['A','C','E']:'9.0.4',['B','D#','F#']:'11.3.6',['B','D','F#']:'11.2.6'},
             fileName: '',
         }
     },
     methods: {
-        pauseSong() {
-            const path = 'http://localhost:5000/pauseSong'
-            axios.post(path)
-                .then((res) =>{
-                    console.log(res.data)
-                })
-                .catch((error) => {
-                    console.log(error)
-                })
-        },
         stopSong() {
             const path = 'http://localhost:5000/stopSong'
             axios.post(path)
@@ -147,10 +137,15 @@ export default {
                 })
         },
         resetNote() {
+            this.wholeNote = []
+            this.indexNote = 0
             this.notes = []
             this.velocities = []
             this.duration = []
-            this.offset = []
+            this.offset = [1]
+            this.startTime = []
+            this.stopTime = []
+            this.timeUsed = []
             this.fileName = ''
         },
         gensong() {
@@ -180,7 +175,7 @@ export default {
         start(rawNote) {
             this.pianoclick(rawNote)
             if(this.checkRecord == 1){
-                var noteto = this.noteList[rawNote]
+                var noteto = this.noteSound[rawNote]
                 for (var i in this.allNote){
                     if(noteto == this.allNote[i]){
                         noteto = i
@@ -188,12 +183,13 @@ export default {
                     }
                 }
                 var message = {'data':[144,noteto,60]}
+                console.log("hi")
                 this.getMIDIMessage(message)
             }
         },
         stop(rawNote) {
             if(this.checkRecord == 1){
-                var noteto = this.noteList[rawNote]
+                var noteto = this.noteSound[rawNote]
                 for (var i in this.allNote){
                     if(noteto == this.allNote[i]){
                         noteto = i
@@ -204,21 +200,112 @@ export default {
                 this.getMIDIMessage(message)
             }
         },
-        noteOn(note) {
-            this.startTimer(note)
+        noteOn() {
+            this.startTimer()
         },
-        noteOff(note,velocity) {
-            this.stopTimer(note,velocity)
+        noteOff(index) {
+            this.stopTimer(index)
         },
 
-        startTimer(note) {
-            this.startTime[note] = new Date();
-            this.offsetCalcu.push(this.startTime[note])
+        startTimer() {
+            this.startTime[this.indexNote] = new Date();
         },
-        stopTimer(note) {
-            this.stopTime[note] = new Date();
-            this.timeUsed[note] = (this.stopTime[note] - this.startTime[note])/1000;
-            console.log(note," used : ",this.timeUsed[note])
+        stopTimer(index) {
+            this.stopTime[index] = new Date();
+            this.timeUsed[index] = (this.stopTime[index] - this.startTime[index])/1000;
+        },
+        checkChord(currentNote){
+            var chordCheck = 0
+            var chordFromNote = []
+            var noteFromChord = []
+            var notee = currentNote.sort()
+            var currentIndex = []
+            for(var i=0;i<notee.length;i++){
+                chordFromNote.push(notee[i].slice(0,-1))
+                currentIndex.push(notee[i].slice(-1))
+            }
+            var a = chordFromNote.sort()
+            var map = new Object()
+            for(var x in this.chordList){
+                if(this.chordList[x].every(val => a.includes(val))){
+                    for(var i = 0; i < currentIndex.length; i++) {
+                        if(map[currentIndex[i]] != null) {
+                            map[currentIndex[i]] += 1;
+                        } else {
+                            map[currentIndex[i]] = 1;
+                            }
+                        }
+                    for(var y in map){
+                        if(map[y] == 3){
+                            for(var z in this.chordList[x]){
+                                noteFromChord.push(this.chordList[x][z]+y)
+                            }
+                        }
+                    }
+                    return [x, noteFromChord]
+                }
+            }
+            return chordCheck
+        },
+        getMIDIMessage(message) {
+            var barCalculate
+            var command = message.data[0];
+            var note = message.data[1];
+            var velocity = (message.data.length > 2) ? message.data[2] : 0; // a velocity value might not be included with a noteOff command
+            if(this.mood == "Happy"){
+                barCalculate = 117.83/60
+            }
+            else if(this.mood == "Sad"){
+                barCalculate = 97/60
+            }
+            else if(this.mood == "Relax"){
+                barCalculate = 103.375/60
+            }
+            if(command == 144){
+                var keySound = this.playSound(this.noteList[note])
+                this.pianoclick(keySound)
+                this.currentNote.push(this.noteList[note])
+            }
+            if(this.currentNote.length >= 3){
+                this.chordOrnot = this.checkChord(this.currentNote)
+                console.log(this.chordOrnot)
+                // var PlayerOne = ['C','E','G','D'];
+                // var PlayerTwo = ['C','E','G'];
+                // console.log(PlayerTwo.every(val => PlayerOne.includes(val)))
+            }
+            if(command == 128){
+                for( var i = 0; i < this.currentNote.length; i++){ 
+                        if ( this.currentNote[i] == this.noteList[note]) {
+                            this.currentNote.splice(i, 1); 
+                            i--;
+                        }
+                    }
+            }
+            if(this.checkRecord == 1){
+                switch (command) {
+                    case 144: // note on
+                        this.wholeNote[this.indexNote] = this.noteList[note]
+                        this.notes[this.indexNote] = this.noteList[note]
+                        this.velocities[this.indexNote] = velocity
+                        this.noteOn()
+                        if(this.indexNote > 0){
+                            this.offset[this.indexNote] = ((this.startTime[this.indexNote]-this.startTime[this.indexNote-1])/1000)*barCalculate
+                        }
+                        this.indexNote += 1
+                        break;
+                    case 128: // note off
+                        for(var i=0;i<this.wholeNote.length;i++){
+                            if(this.wholeNote[i] == this.noteList[note]){
+                                this.noteOff(i)
+                                this.wholeNote[i] = "Used"
+                                this.duration[i] = (this.timeUsed[i])*barCalculate
+                                break;                            
+                            }
+                        }
+                        break;
+                    // we could easily expand this switch statement to cover other types of commands such as controllers or sysex
+                }
+            }
         },
         pianoclick(note) {
             var sound = new Howl({
@@ -246,120 +333,9 @@ export default {
             var outputs = midiAccess.outputs;
         },
         playSound(note) {
-            for(var keys in this.noteList){
-                if(note == this.noteList[keys]){
+            for(var keys in this.noteSound){
+                if(note == this.noteSound[keys]){
                     return keys
-                }
-            }
-        },
-        checkChord(currentNote) {
-            var chordCheck = 0
-            var chordFromNote = []
-            for(var i=0;i<currentNote.length;i++){
-                chordFromNote.push(currentNote[i].slice(0,-1))
-            }
-            var a = chordFromNote.sort()
-            for(var x in this.chordList){
-                var b = this.chordList[x].sort()
-                if(a[0] == b[0] && a[1] == b[1] && a[2] == b[2]){
-                    return x
-                }
-            }
-            return chordCheck
-        },
-        getMIDIMessage(message) {
-            var barCalculate
-            var command = message.data[0];
-            var note = message.data[1];
-            var velocity = (message.data.length > 2) ? message.data[2] : 0; // a velocity value might not be included with a noteOff command
-            if(this.mood == "Happy"){
-                barCalculate = 117.83/60
-            }
-            else if(this.mood == "Sad"){
-                barCalculate = 97/60
-            }
-            else if(this.mood == "Relax"){
-                barCalculate = 103.375/60
-            }
-            if(command == 144){
-                var keySound = this.playSound(this.allNote[note])
-                this.pianoclick(keySound)
-            }
-            if(this.checkRecord == 1){
-                switch (command) {
-                    case 144: // note on
-                        if (velocity > 0) {
-                            
-                            this.currentNote.push(this.allNote[note]);
-                            if(this.currentNote.length == 3){
-                                this.chordOrnot = this.checkChord(this.currentNote)
-                                if(this.chordOrnot != 0){
-                                    note = this.chordOrnot
-                                    this.currentNote = []
-                                    this.currentNote.push(note)
-                                    this.notes.pop()
-                                    this.notes.pop()
-                                    this.velocities.pop()
-                                    this.velocities.pop()
-                                }
-                            }
-                            this.currentVelocity[this.allNote[note]] = velocity;
-                            this.notes.push(this.allNote[note])
-                            this.velocities.push(this.currentVelocity[this.allNote[note]])
-                            this.noteOn(this.allNote[note]);
-                            if(this.offsetCalcu.length == 2){
-                                if(this.chordOrnot != 0){
-                                    this.offset.push((this.offsetCalcu[1]-this.offsetCalcu[0])/1000*barCalculate)
-                                    this.offset.pop()
-                                    this.offset.pop()
-                                }
-                                else{
-                                    this.offset.push((this.offsetCalcu[1]-this.offsetCalcu[0])/1000*barCalculate)
-                                }
-                                this.offsetCalcu.shift()
-                            }
-                            // console.log(this.currentNote)
-                            // console.log(this.startTime);
-                            
-                        }
-                        break;
-                    case 128: // note off
-                        if(this.chordOrnot != 0){
-                            console.log("Chord : ",this.chordOrnot)
-                            note = this.chordOrnot
-                        }
-                        this.noteOff(this.allNote[note],this.currentVelocity[this.allNote[note]]);
-                        if(this.chordOrnot != 0){
-                            console.log(note)
-                            this.duration.push(this.timeUsed[this.allNote[note]]*barCalculate)
-                            this.chordOrnot = 0
-                        }
-                        else{
-                            console.log("YoYo:",this.currentNote.length)
-                            this.duration.push(this.timeUsed[this.allNote[note]]*barCalculate)
-                            if(this.currentNote.length != 1){
-                                this.duration.pop()
-                            }
-                            
-                            this.noteOrnot = 0
-                        }
-                        var popNote = this.currentNote;
-                        this.currentNote = [];
-                        for(var i=0;i<popNote.length;i++)
-                        {
-                            if(popNote[i] != this.allNote[note])
-                            {
-                                this.currentNote.push(popNote[i])
-                            }
-                            else
-                            {
-                                var previousNote = popNote[i];
-                            }
-                        }
-                        
-                        // console.log(this.allNote[note]," : ",this.currentNote);
-                        break;
-                    // we could easily expand this switch statement to cover other types of commands such as controllers or sysex
                 }
             }
         },
@@ -466,7 +442,7 @@ input[type="button"] {
 }
 
 .fade_delay{
-    animation: fading 1000ms;
+    animation: fading 2000ms;
 }
 
 .b {
