@@ -1,5 +1,6 @@
 <template>
     <div id="main">
+        {{checkLogin}}
         Testing Piano<br>
         <div class="right">
             <div class="containerOuter">
@@ -130,6 +131,7 @@ export default {
             const payload = {
                 fileName: this.fileName
             }
+            console.log(payload)
             axios.post(path,payload)
                 .then((res) =>{
                     console.log(res.data)
@@ -158,14 +160,13 @@ export default {
                 duration: this.duration,
                 offset: this.offset,
                 mood: this.mood,
+                user: this.$store.state.user.username
             }
             this.loadingPage = true
             axios.post(path,payload)
                 .then((res) =>{
+                    this.loadingPage = false
                     this.fileName = res.data
-                    if(this.fileName =! null){
-                        this.loadingPage = false
-                    }
                 })
                 .catch((error) => {
                     console.log(error)
@@ -182,22 +183,21 @@ export default {
             this.pianoclick(rawNote)
             if(this.checkRecord == 1){
                 var noteto = this.noteSound[rawNote]
-                for (var i in this.allNote){
-                    if(noteto == this.allNote[i]){
+                for (var i in this.noteList){
+                    if(noteto == this.noteList[i]){
                         noteto = i
                         break;
                     }
                 }
                 var message = {'data':[144,noteto,60]}
-                console.log("hi")
                 this.getMIDIMessage(message)
             }
         },
         stop(rawNote) {
             if(this.checkRecord == 1){
                 var noteto = this.noteSound[rawNote]
-                for (var i in this.allNote){
-                    if(noteto == this.allNote[i]){
+                for (var i in this.noteList){
+                    if(noteto == this.noteList[i]){
                         noteto = i
                         break;
                     }
@@ -347,6 +347,11 @@ export default {
         },
     },
     computed: {
+        checkLogin(){
+            if(this.$store.state.user == null){
+                this.$router.push('/')
+            }
+        },
          midiController() {
             navigator.requestMIDIAccess()
                 .then(this.onMIDISuccess, this.onMIDIFailure);

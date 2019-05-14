@@ -362,21 +362,28 @@ def index():
 
 @app.route('/getUser', methods = ['GET'])
 def getUser():
-    with open('user.json') as json_file:  
+    with open('./data/user.json') as json_file:  
         data = json.load(json_file)
     return jsonify(data)
 
-@app.route('/addUser', methods = ['POST', 'GET'])
+@app.route('/addUser', methods = ['POST'])
 def addUser():
     if request.method == 'POST':
         post_data = request.get_json()
-        with open('user.json') as json_file:  
+        with open('./data/user.json') as json_file:  
             data = json.load(json_file)
         json_file.close()
-        data.append(post_data)
-        with open('user.json', 'w') as outfile:  
+        pushdata = {
+            "id_user": len(data)+1,
+            "username": post_data['username'],
+            "password": post_data['password'],
+            "email": post_data['email']
+        }
+        data.append(pushdata)
+        with open('./data/user.json', 'w') as outfile:  
             json.dump(data, outfile)
         outfile.close()
+        return "Add Done"
 
 @app.route('/genSong',methods = ['POST', 'GET'])
 def genSong():
@@ -391,11 +398,11 @@ def genSong():
         fileName = getMidi(predictOutput)
         for x in predictOutput:
             print(x)
+        return fileName
     if request.method == 'GET':
         print(predictOutput)
         data = {"data": predictOutput}
         return jsonify(data)
-    return fileName
 
 @app.route('/playSong',methods = ['POST','GET'])
 def playSong():
