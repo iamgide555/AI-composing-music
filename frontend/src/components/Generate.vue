@@ -15,6 +15,14 @@
                     <div class="overlay"></div>
                 </div>
                 <br>
+                <b-field label="Duration (Second)" >
+                    <b-select v-model="songDuration" size="is-medium">
+                        <option>5</option> sec.
+                        <option>10</option> sec.
+                        <option>15</option> sec.
+                        <option>20</option> sec.
+                    </b-select>
+                </b-field>
                 <button v-on:click=startrecord>Record</button> <button v-on:click=stoprecord>Stop</button>  <button v-on:click=resetNote>Reset</button> <br>
                 <button v-on:click=gensong>Generate Song</button> <br>
                 <button v-if="fileName != ''" v-on:click=playSong>Play</button>
@@ -83,6 +91,7 @@
         {{midiController}} <br> {{notes.length}}:{{velocities.length}}:{{duration.length}}:{{offset.length}} <br>
         Current Note: {{currentNote}}<br>
         Note: {{notes}} <br> Velocity: {{velocities}} <br> Duration: {{duration}} <br> Offset: {{offset}} <br>
+        <br> Song Duration: {{songDuration}}
     </div>
 </template>
 
@@ -102,6 +111,7 @@ export default {
             duration: [],
             offset: [1],
             mood: '',
+            songDuration: 0,
             currentNote: [],
             wholeNote: [],
             timeUsed: [],
@@ -160,7 +170,8 @@ export default {
                 duration: this.duration,
                 offset: this.offset,
                 mood: this.mood,
-                user: this.$store.state.user.username
+                user: this.$store.state.user.id_user,
+                songDuration: this.songDuration,
             }
             this.loadingPage = true
             axios.post(path,payload)
@@ -476,7 +487,7 @@ div.right {
 .containerOuter {
   background: rgba(251, 250, 255, 0.766) ;
   border-radius: 8px;
-  width: 250px;
+  width: 300px;
   box-shadow: 2px 6px 10px 2px rgba(119, 119, 219, 0.15);
   font-size: 18px;
 }

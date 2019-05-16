@@ -117,9 +117,16 @@ def loadModel_jsonNote():
         
     return Hmodel, Smodel, Rmodel, Hdict, Sdict, Rdict
 
-def generateSong(pattern,mood,my_dict2):
+def generateSong(pattern,mood,my_dict2,sDuration):
     predictOutput = None
-    def generator(genPattern,mood,my_dict2):
+    def generator(genPattern,mood,my_dict2,duration):
+        totalDuration = 0
+        if(mood == "Happy"):
+            barCalculate = 60/117.83
+        elif(mood == "Sad"):
+            barCalculate = 60/97
+        elif(mood == "Relax"):
+            barCalculate = 60/103.375
         if mood == "Happy":
             model1 = Hmodel
         elif mood == "Sad":
@@ -140,19 +147,22 @@ def generateSong(pattern,mood,my_dict2):
                     genPattern.append(y)
             elif(len(genPattern) > 50):
                 genPattern = genPattern[len(genPattern)-50:]
-            for prediction_index in range (100):
+            while(totalDuration < float(duration)):
                 prediction_input = numpy.reshape(genPattern, (1, len(genPattern), 1))
                 prediction = model1.predict(prediction_input, verbose = 0)
                 index=numpy.argmax(prediction,axis=1)
                 print(index[0])
                 result = my_dict2[index[0]]
+                totalDuration = totalDuration + (float(result[1])*barCalculate)
+                print("+",float(result[1])*barCalculate)
+                print("TotalDuration :",totalDuration)
                 prediction_output.append(result)
                 result=numpy.asarray(result)
                 genPattern = numpy.append(genPattern,[index])
                 genPattern = genPattern[1:len(genPattern)]
             return prediction_output
     print("Start")
-    predictOutput = generator(pattern,mood,my_dict2)
+    predictOutput = generator(pattern,mood,my_dict2,sDuration)
     print("Done")
     return predictOutput
 
@@ -389,13 +399,18 @@ def addUser():
 def genSong():
     usedData = []
     predictOutput = []
+    finalPredictData = []
     if request.method == 'POST':
         post_data = request.get_json()
+        for x in range(len(post_data)):
+            finalPredictData.append((post_data["note"][x],post_data["duration"][x],post_data["offset"][x],post_data["velocity"][x]))
         usedData,my_dict2, mood = preData(post_data)
-        print(len(usedData))
-        print(usedData)
-        predictOutput = generateSong(usedData,mood,my_dict2)
+        predictOutput = generateSong(usedData,mood,my_dict2,post_data["songDuration"])
+        for x in predictOutput:
+            finalPredictData.append(x)
+        print(finalPredictData)
         fileName = getMidi(predictOutput)
+        # fileName = "Hi"
         for x in predictOutput:
             print(x)
         return fileName
@@ -418,39 +433,6 @@ def stopSong():
     post_data = request.get_json()
     pygame.mixer.music.stop()
     return "stop"
-
-@app.route('/pauseSong',methods = ['POST','GET'])
-def pauseSong():
-    post_data = request.get_json()
-    pygame.mixer.music.pause()
-    return "pause"
-    # allNote =  ["A1","A2","A3","A4","A5","A6","A7","A8",
-    #             "B1","B2","B3","B4","B5","B6","B7","B8",
-    #             "C1","C2","C3","C4","C5","C6","C7","C8",
-    #             "D1","D2","D3","D4","D5","D6","D7","D8",
-    #             "E1","E2","E3","E4","E5","E6","E7","E8",
-    #             "F1","F2","F3","F4","F5","F6","F7","F8",
-    #             "G1","G2","G3","G4","G5","G6","G7","G8"]
-    # if request.method == 'POST':
-    #     firstNote = request.form['firstNote']
-    #     if firstNote not in allNote:
-    #         check = 1
-    #         return render_template("index.html",check = check)
-    #     else:
-    #         mood = request.form['mood']
-    #         print(firstNote)
-    #         print(mood)
-    #         if mood == "Happy":
-    #             dataDict = Hdict
-    #         elif mood == "Sad":
-    #             dataDict = Sdict
-    #         elif mood == "Relax":
-    #             dataDict = Rdict
-    #         pattern,firstIndexNote = getNetworkInput(firstNote,mood)
-    #         print("Len dict :",len(dataDict))
-    #         prediction_output = generateSong(firstNote,pattern,mood,dataDict, firstIndexNote)
-    #         return render_template("output.html",checkaa = prediction_output)
-    #         #return render_template("output.html",checkaa = test)
 
 if __name__ == '__main__':
     app.run()
