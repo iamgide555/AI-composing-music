@@ -402,7 +402,10 @@ def genSong():
     finalPredictData = []
     if request.method == 'POST':
         post_data = request.get_json()
-        for x in range(len(post_data)):
+        print(post_data)
+        print(len(post_data))
+        for x in range(len(post_data['note'])):
+            print((post_data["note"][x],post_data["duration"][x],post_data["offset"][x],post_data["velocity"][x]))
             finalPredictData.append((post_data["note"][x],post_data["duration"][x],post_data["offset"][x],post_data["velocity"][x]))
         usedData,my_dict2, mood = preData(post_data)
         predictOutput = generateSong(usedData,mood,my_dict2,post_data["songDuration"])

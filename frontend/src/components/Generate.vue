@@ -91,7 +91,6 @@
         {{midiController}} <br> {{notes.length}}:{{velocities.length}}:{{duration.length}}:{{offset.length}} <br>
         Current Note: {{currentNote}}<br>
         Note: {{notes}} <br> Velocity: {{velocities}} <br> Duration: {{duration}} <br> Offset: {{offset}} <br>
-        <br> Song Duration: {{songDuration}}
     </div>
 </template>
 
@@ -177,7 +176,9 @@ export default {
             axios.post(path,payload)
                 .then((res) =>{
                     this.loadingPage = false
-                    this.fileName = res.data
+                    var file = [res.data,this.songDuration]
+                    this.$store.commit('getFilename',file)
+                    this.$router.push('/PlaySound')
                 })
                 .catch((error) => {
                     console.log(error)

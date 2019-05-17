@@ -4,7 +4,9 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 /* eslint-disable */
 const state = {
-  user: null
+  user: null,
+  fileName: null,
+  duration: null
 }
 
 const mutations = {
@@ -14,6 +16,10 @@ const mutations = {
   logout(state, router) {
     state.user = null
     router.push('/')
+  },
+  getFilename(state, file) {
+    state.fileName = file[0]
+    state.duration = file[1]
   }
 }
 
