@@ -176,6 +176,7 @@ export default {
             axios.post(path,payload)
                 .then((res) =>{
                     this.loadingPage = false
+                    // this.fileName = res.data
                     var file = [res.data,this.songDuration]
                     this.$store.commit('getFilename',file)
                     this.$router.push('/PlaySound')

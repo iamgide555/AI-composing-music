@@ -153,8 +153,8 @@ def generateSong(pattern,mood,my_dict2,sDuration):
                 index=numpy.argmax(prediction,axis=1)
                 print(index[0])
                 result = my_dict2[index[0]]
-                totalDuration = totalDuration + (float(result[1])*barCalculate)
-                print("+",float(result[1])*barCalculate)
+                totalDuration = totalDuration + (float(result[2])*barCalculate)
+                print("+",float(result[2])*barCalculate)
                 print("TotalDuration :",totalDuration)
                 prediction_output.append(result)
                 result=numpy.asarray(result)
