@@ -5,7 +5,8 @@
           <div class="topnav">
             <div class="logo">
               <router-link to="/">
-                <img src="./assets/logo.png">
+                <img src="./assets/logo.png" width="40" height="40">
+                <a>simple music</a>
               </router-link>
             </div>
             <ul class="menu-area">
@@ -60,7 +61,6 @@ export default {
 
 html,body {
   height: 100%;
-  min-height:100%;
   margin: 0;
   padding: 0;
   background-attachment:fixed;
@@ -85,23 +85,14 @@ html,body {
 }
 
 /* Change the color of links on hover */
-.topnav a:hover {
-  background-color: #ddd;
-  color: black;
-}
-
 .topnav .icon {
   display: none;
 }
-
 .logo {
-  width: 10%;
   float: left;
-  text-transform: uppercase;
-  color: #fff;
-  font-size: 15px;
   text-align: left;
-  padding-left: 10px;
+  padding-top: 5px;
+  padding-left: 20px;
 }
 nav {
     position: relative;
@@ -111,12 +102,9 @@ nav {
     text-align: right;
     padding-right: 2%;
 }
-
 .menu-area li {
     display: inline-block;
 }
-
-
 .menu-area a:hover {
     background: rgb(234, 240, 255);
     color: rgb(19, 17, 22);

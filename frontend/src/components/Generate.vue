@@ -1,6 +1,5 @@
 <template>
     <div id="main">
-        {{checkLogin}}
         Testing Piano<br>
         <div class="right">
             <div class="containerOuter">
