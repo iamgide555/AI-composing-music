@@ -5,7 +5,8 @@ Vue.use(Vuex)
 /* eslint-disable */
 const state = {
   user: null,
-  fileName: null,
+  file_name: null,
+  path: null,
   duration: null
 }
 
@@ -18,8 +19,9 @@ const mutations = {
     router.push('/')
   },
   getFilename(state, file) {
-    state.fileName = file[0]
-    state.duration = file[1]
+    state.path = file[0]
+    state.duration = file[3]
+    state.file_name = file[2]
   }
 }
 

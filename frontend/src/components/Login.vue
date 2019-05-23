@@ -38,8 +38,6 @@
                 </button>
             </router-link>
         </section>
-        {{username}} <br>
-        {{password}}
     </div>
 </template>
 

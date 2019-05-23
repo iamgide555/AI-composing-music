@@ -350,9 +350,9 @@ def getMidi(prediction_output):
     path, dirs, files = next(os.walk('../frontend/static/fileSong'))
     file_count = len(files)
     print(file_count)
-    file_name = '../frontend/static/fileSong/testOutput'+ str(file_count) + '.mid'
-    midi_stream.write('midi', fp=file_name)
-    return file_name
+    path = '../frontend/static/fileSong/testOutput'+ str(file_count) + '.mid'
+    midi_stream.write('midi', fp=path)
+    return path,str(file_count),"testOutput"+ str(file_count)
         
 # Load everyData
 Hmodel, Smodel, Rmodel, Hdict, Sdict, Rdict = loadModel_jsonNote()
@@ -412,11 +412,12 @@ def genSong():
         for x in predictOutput:
             finalPredictData.append(x)
         print(finalPredictData)
-        fileName = getMidi(predictOutput)
-        # fileName = "Hi"
+        filePath,file_id,fileName = getMidi(predictOutput)
+        # filePath = "Hi"
         for x in predictOutput:
             print(x)
-        return fileName
+        returnData = filePath + " " + file_id + " " + fileName
+        return str(returnData)
     if request.method == 'GET':
         print(predictOutput)
         data = {"data": predictOutput}
@@ -436,6 +437,19 @@ def stopSong():
     post_data = request.get_json()
     pygame.mixer.music.stop()
     return "stop"
+
+@app.route('/addSong', methods = ['POST','GET'])
+def addSong():
+    if request.method == 'POST':
+        post_data = request.get_json()
+        with open('./data/song.json') as json_file:  
+            data = json.load(json_file)
+        json_file.close()
+        data.append(post_data)
+        with open('./data/song.json', 'w') as outfile:  
+            json.dump(data, outfile)
+        outfile.close()
+        return "Done"
 
 if __name__ == '__main__':
     app.run()
