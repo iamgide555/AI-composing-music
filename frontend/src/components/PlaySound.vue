@@ -2,7 +2,15 @@
     <div>
         <button v-on:click=playSong>Play</button>
         <button v-on:click=stopSong>Stop</button> <br>
-        <progress class="progress is-small" value="80" max="100">15%</progress>
+        <progress class="progress is-small" v-bind:value="duration" max="100">15%</progress>
+        <b-field label="Comment">
+            <b-input maxlength="200" type="textarea" size="is-small"></b-input>
+        </b-field>
+        <br>
+        <b-button type="is-success">Submit</b-button>     <b-button type="is-danger">Reset</b-button>
+        <br>
+        Comment: {{comment}}
+
     </div>
 </template>
 
@@ -12,14 +20,23 @@ import axios from 'axios';
 export default {
     data() {
         return {
-            test: 10,
-            test2: 20,
             user: this.$store.state.user,
             path: this.$store.state.path,
-            duration: this.$store.state.duration
+            duration: this.$store.state.duration,
+            comment:[],
         }
     },
     methods: {
+        getComment() {
+            const path = 'http://localhost:5000/getComment'
+            axios.get(path)
+                .then((res) =>{
+                    this.comment = res.data
+                })
+                .catch((error) => {
+                    console.log(error)
+                })
+        },
         stopSong() {
             const path = 'http://localhost:5000/stopSong'
             axios.post(path)

@@ -451,6 +451,12 @@ def addSong():
         outfile.close()
         return "Done"
 
+@app.route('/getComment', methods = ['GET'])
+def getComment():
+    with open('./data/comment.json') as json_file:  
+        data = json.load(json_file)
+    return jsonify(data)
+
 if __name__ == '__main__':
     app.run()
 

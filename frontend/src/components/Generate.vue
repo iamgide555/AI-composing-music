@@ -187,7 +187,7 @@ export default {
                         mood: this.mood,
                     }
                     this.saveSongData(songData)
-                    // this.$router.push('/PlaySound')
+                    this.$router.push('/PlaySound')
                 })
                 .catch((error) => {
                     console.log(error)
