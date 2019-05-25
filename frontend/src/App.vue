@@ -20,6 +20,7 @@
                   <a>Login</a>
                 </router-link>
               </li>
+              <div v-if="user">Welcome {{this.$store.state.user.username}} <br></div>
               <li @click="list" v-if="user">
                 <a>List</a>
               </li>

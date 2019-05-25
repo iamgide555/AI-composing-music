@@ -454,6 +454,13 @@ def addSong():
         outfile.close()
         return "Done"
 
+@app.route('/getSong', methods = ['GET'])
+def getSong():
+    with open('./data/song.json') as json_file:  
+        data = json.load(json_file)
+    return jsonify(data)
+
+
 @app.route('/getComment', methods = ['GET'])
 def getComment():
     with open('./data/comment.json') as json_file:  
