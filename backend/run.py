@@ -457,8 +457,21 @@ def getComment():
         data = json.load(json_file)
     return jsonify(data)
 
+@app.route('/addComment', methods = ['POST','GET'])
+def addComment():
+    if request.method == 'POST':
+        post_data = request.get_json()
+        with open('./data/comment.json') as json_file:  
+            data = json.load(json_file)
+        json_file.close()
+        data.append(post_data)
+        with open('./data/comment.json', 'w') as outfile:  
+            json.dump(data, outfile)
+        outfile.close()
+        return "Done"
+
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=1)
 
 
 

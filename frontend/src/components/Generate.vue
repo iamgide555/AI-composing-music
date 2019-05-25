@@ -25,9 +25,6 @@
                 </b-field>
                 <button v-on:click=startrecord>Record</button> <button v-on:click=stoprecord>Stop</button>  <button v-on:click=resetNote>Reset</button> <br>
                 <button v-on:click=gensong>Generate Song</button> <br>
-                <button v-if="fileName != ''" v-on:click=playSong>Play</button>
-                <button v-if="fileName != ''" v-on:click=stopSong>Stop</button>
-                <br>
             </div>
         </div>
         <div class="bottom">
