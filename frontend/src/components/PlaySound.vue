@@ -79,6 +79,9 @@ export default {
             const path = 'http://localhost:5000/getComment'
             axios.get(path)
                 .then((res) =>{
+                    for(x in res.data){
+                        console.log(x)
+                    }
                     this.comment = res.data
                 })
                 .catch((error) => {

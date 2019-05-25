@@ -182,6 +182,8 @@ export default {
                         ID_user: this.$store.state.user.id_user.toString(),
                         nameSong: file[2],
                         mood: this.mood,
+                        path: this.$store.state.path,
+                        duration: this.songDuration
                     }
                     this.saveSongData(songData)
                     this.$router.push('/PlaySound')

@@ -9,6 +9,7 @@ import Generate from '@/components/Generate'
 import Example from '@/components/Example'
 import testTee from '@/components/testTee'
 import PlaySound from '@/components/PlaySound'
+import List from '@/components/List'
 
 Vue.use(Router)
 
@@ -59,6 +60,11 @@ export default new Router({
       path: '/PlaySound',
       name: 'PlaySound',
       component: PlaySound
+    },
+    {
+      path: '/List',
+      name: 'List',
+      component: List
     }
   ]
 })
