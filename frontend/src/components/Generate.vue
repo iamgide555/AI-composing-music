@@ -1,5 +1,6 @@
 <template>
     <div id="main">
+        {{checkLogin}}
         Testing Piano<br>
         <div class="right">
             <div class="containerOuter">
@@ -95,7 +96,6 @@
 
 <script>
 /* eslint-disable */
-require('howler');
 import axios from 'axios';
 export default {
     data() {
@@ -109,7 +109,7 @@ export default {
             duration: [],
             offset: [1],
             mood: '',
-            songDuration: 0,
+            songDuration: 5,
             currentNote: [],
             wholeNote: [],
             timeUsed: [],
@@ -174,16 +174,34 @@ export default {
             this.loadingPage = true
             axios.post(path,payload)
                 .then((res) =>{
+                    console.log("Gen Song Done")
                     this.loadingPage = false
                     // this.fileName = res.data
-                    var file = [res.data,this.songDuration]
+                    var file = res.data.split(" ")
+                    file.push(this.duration)
                     this.$store.commit('getFilename',file)
+                    var songData = {
+                        ID_song: file[1],
+                        ID_user: this.$store.state.user.id_user.toString(),
+                        nameSong: file[2],
+                        mood: this.mood,
+                    }
+                    this.saveSongData(songData)
                     this.$router.push('/PlaySound')
                 })
                 .catch((error) => {
                     console.log(error)
                 })
-            console.log("postDone")
+        },
+        saveSongData(songData) {
+            const path = 'http://localhost:5000/addSong'
+            axios.post(path,songData)
+                .then((res) =>{
+                    console.log("Done Add song")
+                })
+                .catch((error) => {
+                    console.log(error)
+                })
         },
         startrecord() {
             this.checkRecord = 1
