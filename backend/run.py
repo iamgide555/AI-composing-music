@@ -63,8 +63,11 @@ def loadModel_jsonNote():
         return perplexity
     #Load Model
     Hmodel = load_model('./Model_moods/model_happy_more_padding_1.h5',custom_objects={'perplexity': perplexity})
+    print("Happy Model Mode")
     Smodel = load_model('./Model_moods/model_sad_more_padding_1.h5',custom_objects={'perplexity': perplexity})
-    Rmodel = load_model('./Model_moods/model_relax_more_padding_1.h5',custom_objects={'perplexity': perplexity})
+    print("Sad Model Done")
+    # Rmodel = load_model('./Model_moods/model_relax_more_padding_1.h5',custom_objects={'perplexity': perplexity})
+    # print("Relax Model Done")
     
     #Load Note
     with open("./NoteData/happy_dict_morePedding.json") as f:
