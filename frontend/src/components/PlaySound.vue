@@ -13,9 +13,11 @@
             <a class="button is-danger" v-on:click="reset">Reset</a>
         </section>
         <br>
-        {{check}}
-        <br>
-        Comment: {{comment}}
+        <section>
+            <b-message v-for="x in comment" v-bind:title="x['username']">
+                {{x['comment']}}
+            </b-message>
+        </section>
     </div>
 </template>
 
@@ -83,8 +85,6 @@ export default {
             const payload = {
                 fileName: this.path
             }
-            console.log(payload)
-            console.log(this.$store.state.user)
             axios.post(path,payload)
                 .then((res) =>{
                     console.log(res.data)
