@@ -4,7 +4,7 @@
         <button v-on:click=playSong>Play</button>
         <button v-on:click=stopSong>Stop</button> <br>
         <button class='button1'></button>
-        <progress class="progress is-small" max="100">{{this.$store.state.duration}}</progress>
+        <progress class="progress is-small" v-bind:value="check" v-bind:max="duration"></progress>
         <b-field label="Comment">
             <b-input maxlength="200" type="textarea" size="is-small" v-model="message"></b-input>
         </b-field>
@@ -13,6 +13,8 @@
             <a class="button is-success" v-on:click="submit">Submit</a>
             <a class="button is-danger" v-on:click="reset">Reset</a>
         </section>
+        <br>
+        {{check}}
         <br>
         Comment: {{comment}}
 
@@ -28,11 +30,23 @@ export default {
             user: this.$store.state.user,
             path: this.$store.state.path,
             duration: this.$store.state.duration,
+            check: 0,
             comment:[],
             message:'',
+            polling:null,
         }
     },
     methods: {
+        pollData () {
+            this.check = 0
+            if(this.check < this.duration){
+                this.polling = setInterval(() => {
+                    console.log("Hi")
+                    this.check = this.check + 1
+                    console.log(this.check)
+                }, 1000)
+            }
+        },
         reset() {
             this.message = []
         },
@@ -63,6 +77,7 @@ export default {
                 })
         },
         playSong() {
+            this.pollData()
             const path = 'http://localhost:5000/playSong'
             const payload = {
                 fileName: this.path
@@ -83,7 +98,7 @@ export default {
             const path = 'http://localhost:5000/getComment'
             axios.get(path)
                 .then((res) =>{
-                    for(x in res.data){
+                    for(var x in res.data){
                         console.log(x)
                     }
                     this.comment = res.data
