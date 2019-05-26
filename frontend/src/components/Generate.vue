@@ -16,12 +16,12 @@
                 </div>
                 <br>
                 <b-field label="Duration (Second)" >
-                    <b-select v-model="songDuration" size="is-medium">
+                    <select v-model="songDuration">
                         <option>5</option> sec.
                         <option>10</option> sec.
                         <option>15</option> sec.
                         <option>20</option> sec.
-                    </b-select>
+                    </select>
                 </b-field>
                 <button v-on:click=startrecord>Record</button> <button v-on:click=stoprecord>Stop</button>  <button v-on:click=resetNote>Reset</button> <br>
                 <button v-on:click=gensong>Generate Song</button> <br>
@@ -443,7 +443,6 @@ input[type="button"] {
     border-radius: 5px;
 }
 
-
 .text {
     float: left;
     text-align: center;
@@ -506,7 +505,7 @@ div.right {
 .containerOuter {
   background: rgba(251, 250, 255, 0.766) ;
   border-radius: 8px;
-  width: 300px;
+  width: 260px;
   box-shadow: 2px 6px 10px 2px rgba(119, 119, 219, 0.15);
   font-size: 18px;
 }
@@ -514,7 +513,7 @@ div.right {
   position: relative;
   margin : 20px;
   overflow: hidden;
-  width: 160px;
+  width: 260px;
 }
 .hidden {
   display: none;

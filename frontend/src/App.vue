@@ -9,7 +9,7 @@
                 <a>simple music</a>
               </router-link>
             </div>
-            <ul class="menu-area">
+            <div class="menu-area">
               <li>
                 <router-link to="/signup" v-if="!user">
                   <a>Sign up</a>
@@ -20,11 +20,11 @@
                   <a>Login</a>
                 </router-link>
               </li>
-              <div v-if="user">Welcome {{$store.state.user.username}}</div>
+              <li v-if="user"><a>Welcome {{$store.state.user.username}}</a></li>
               <li v-on:click="logout" v-if="user">
                 <a>Logout</a>
               </li>
-            </ul>
+            </div>
           </div>
         </nav>
       </section>
@@ -75,11 +75,11 @@ html,body {
 /* Style the links inside the navigation bar */
 .topnav a {
   float: right;
-  display: block;
+  display: inline-block;
   color: #fff0f0;
   text-align: center;
-  padding: 8px 12px;
-  font-size: 18px;
+  padding: 5px 16px;
+  font-size: 20px;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   text-transform: uppercase;
 }
@@ -104,6 +104,7 @@ nav {
 }
 .menu-area li {
     display: inline-block;
+
 }
 .menu-area a:hover {
     background: rgb(234, 240, 255);
@@ -113,5 +114,4 @@ nav {
 .menu-area a:hover:after {
     transform: translateY(-50%) rotate(-35deg);
 }
-
 </style>
