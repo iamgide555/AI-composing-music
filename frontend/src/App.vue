@@ -20,7 +20,14 @@
                   <a>Login</a>
                 </router-link>
               </li>
+<<<<<<< HEAD
               <li v-if="user"><a>Welcome {{$store.state.user.username}}</a></li>
+=======
+              <div v-if="user">Welcome {{this.$store.state.user.username}} <br></div>
+              <li @click="list" v-if="user">
+                <a>List</a>
+              </li>
+>>>>>>> 19392d69e10872d0243382bd9d2388525ecb6cda
               <li v-on:click="logout" v-if="user">
                 <a>Logout</a>
               </li>
@@ -42,6 +49,9 @@ export default {
     }
   },
   methods: {
+    list() {
+      this.$router.push('/list')
+    },
     logout() {
       this.$store.commit('logout', this.$router)
     }

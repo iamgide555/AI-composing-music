@@ -1,4 +1,5 @@
 {
     "python.linting.pylintEnabled": true,
-    "python.pythonPath": "D:\\ProgramForWork\\Anaconda\\python.exe"
+    "python.pythonPath": "D:\\ProgramForWork\\Anaconda\\envs\\gpu\\python.exe",
+    "python.linting.enabled": true
 }
