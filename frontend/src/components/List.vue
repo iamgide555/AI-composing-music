@@ -8,14 +8,18 @@
                 <b-table
                     :data="data"
                     :columns="columns"
-                     focusable>
+                     selectable
+                     focusable
+                     @select="song">
                 </b-table>
             </b-tab-item>
             <b-tab-item label="My List">
                 <b-table
                     :data="yourData"
                     :columns="columns"
-                     focusable>
+                     selectable
+                     focusable
+                     @select="song">
                 </b-table>
             </b-tab-item>
         </b-tabs>
@@ -56,7 +60,11 @@ export default {
         }
     },
     methods: {
-        
+        song(data) {
+            var file = [data['path'],data['ID_song'],data['nameSong'],data['duration']]
+            this.$store.commit('getFilename',file)
+            this.$router.push('/PlaySound')
+        },
     },
     computed: {
         getSong() {
