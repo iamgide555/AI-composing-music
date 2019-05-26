@@ -2,29 +2,30 @@
     <div>
     {{getSong}}
         List Page <br>
-        <!-- b-tabs -->
-        <b-tabs>
-            <b-tab-item label="List">
-                <b-table
-                    :data="data"
-                    :columns="columns"
-                     selectable
-                     focusable
-                     @select="song">
-                </b-table>
-            </b-tab-item>
-            <b-tab-item label="My List">
-                <b-table
-                    :data="yourData"
-                    :columns="columns"
-                     selectable
-                     focusable
-                     @select="song">
-                </b-table>
-            </b-tab-item>
-        </b-tabs>
+        <div class="container">
+            <!-- b-tabs -->
+            <b-tabs>
+                <b-tab-item label="List">
+                    <b-table
+                        :data="data"
+                        :columns="columns"
+                        selectable
+                        focusable
+                        @select="song">
+                    </b-table>
+                </b-tab-item>
+                <b-tab-item label="My List">
+                    <b-table
+                        :data="yourData"
+                        :columns="columns"
+                        selectable
+                        focusable
+                        @select="song">
+                    </b-table>
+                </b-tab-item>
+            </b-tabs>
         <!-- / b-tabs END -->
-        {{data}}
+        </div>
     </div>
 </template>
 
@@ -85,3 +86,17 @@ export default {
     },
 }
 </script>
+<style>
+html,body {
+  background: -webkit-linear-gradient(#24234D 0%,#241428 100%); 
+  font-family: "Open Sans", sans-serif;
+}
+.container {
+    position: relative;
+    margin : 20px;
+    padding-left: 20%;
+    width: 1200px;
+    cursor: pointer;
+}
+
+</style>    

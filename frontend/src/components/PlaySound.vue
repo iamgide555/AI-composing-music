@@ -3,12 +3,16 @@
         {{getComment}}
         <button v-on:click=playSong>Play</button>
         <button v-on:click=stopSong>Stop</button> <br>
-        <progress class="progress is-small" v-bind:value="duration" max="100">15%</progress>
+        <button class='button1'></button>
+        <progress class="progress is-small" max="100">{{this.$store.state.duration}}</progress>
         <b-field label="Comment">
             <b-input maxlength="200" type="textarea" size="is-small" v-model="message"></b-input>
         </b-field>
         <br>
-        <b-button type="is-success" @click="submit">Submit</b-button>     <b-button type="is-danger" @click="reset">Reset</b-button>
+        <section>
+            <a class="button is-success" v-on:click="submit">Submit</a>
+            <a class="button is-danger" v-on:click="reset">Reset</a>
+        </section>
         <br>
         Comment: {{comment}}
 
@@ -91,3 +95,25 @@ export default {
     }
 }
 </script>
+<style>
+.button1 {
+  border: 0;
+  background: transparent;
+  box-sizing: border-box;
+  width: 0;
+  height: 74px;
+  border-color: transparent transparent transparent #202020;
+  transition: 100ms all ease;
+  cursor: pointer;
+  border-style: solid;
+  border-width: 37px 0 37px 60px;
+}
+.button.paused {
+  border-style: double;
+  border-width: 0px 0 0px 60px;
+}
+.button:hover {
+  border-color: transparent transparent transparent #404040;
+}
+
+</style>

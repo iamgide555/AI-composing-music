@@ -20,17 +20,13 @@
                   <a>Login</a>
                 </router-link>
               </li>
-<<<<<<< HEAD
-              <li v-if="user"><a>Welcome {{$store.state.user.username}}</a></li>
-=======
-              <div v-if="user">Welcome {{this.$store.state.user.username}} <br></div>
-              <li @click="list" v-if="user">
-                <a>List</a>
-              </li>
->>>>>>> 19392d69e10872d0243382bd9d2388525ecb6cda
-              <li v-on:click="logout" v-if="user">
-                <a>Logout</a>
-              </li>
+              <ul v-if="user">Welcome {{this.$store.state.user.username}} </ul>
+                <li @click="list" v-if="user">
+                  <a>List</a>
+                </li>
+                <li v-on:click="logout" v-if="user">
+                  <a>Logout</a>
+                </li>
             </div>
           </div>
         </nav>
@@ -93,7 +89,15 @@ html,body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   text-transform: uppercase;
 }
-
+.topnav ul {
+  float:none;
+  display: inline-block;
+  color: #8b899e;
+  text-align:initial;
+  padding: 0px 24px;
+  font-size: 18px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
 /* Change the color of links on hover */
 .topnav .icon {
   display: none;

@@ -25,6 +25,9 @@
                 </b-field>
                 <button v-on:click=startrecord>Record</button> <button v-on:click=stoprecord>Stop</button>  <button v-on:click=resetNote>Reset</button> <br>
                 <button v-on:click=gensong>Generate Song</button> <br>
+                <button v-if="fileName != ''" v-on:click=playSong>Play</button>
+                <button v-if="fileName != ''" v-on:click=stopSong>Stop</button>
+                <br>
             </div>
         </div>
         <div class="bottom">
@@ -179,11 +182,9 @@ export default {
                     this.$store.commit('getFilename',file)
                     var songData = {
                         ID_song: file[1],
-                        username: this.$store.state.user.username,
+                        ID_user: this.$store.state.user.id_user.toString(),
                         nameSong: file[2],
                         mood: this.mood,
-                        path: this.$store.state.path,
-                        duration: this.songDuration
                     }
                     this.saveSongData(songData)
                     this.$router.push('/PlaySound')
@@ -441,7 +442,6 @@ input[type="button"] {
     -webkit-border-radius: 5px;
     border-radius: 5px;
 }
-
 .text {
     float: left;
     text-align: center;

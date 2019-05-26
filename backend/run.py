@@ -66,8 +66,8 @@ def loadModel_jsonNote():
     print("Happy Model Mode")
     Smodel = load_model('./Model_moods/model_sad_more_padding_1.h5',custom_objects={'perplexity': perplexity})
     print("Sad Model Done")
-    Rmodel = load_model('./Model_moods/model_relax_more_padding_1.h5',custom_objects={'perplexity': perplexity})
-    print("Relax Model Done")
+    #Rmodel = load_model('./Model_moods/model_relax_more_padding_1.h5',custom_objects={'perplexity': perplexity})
+    #print("Relax Model Done")
     
     #Load Note
     with open("./NoteData/happy_dict_morePedding.json") as f:
@@ -78,10 +78,10 @@ def loadModel_jsonNote():
         sadJson = json.load(f)
     Sdict = getDict(sadJson)
     f.close()
-    with open("./NoteData/relax_dict_morePedding.json") as f:
-        relaxJson = json.load(f)
-    Rdict = getDict(relaxJson)
-    f.close()
+    #with open("./NoteData/relax_dict_morePedding.json") as f:
+     #   relaxJson = json.load(f)
+    #Rdict = getDict(relaxJson)
+    #f.close()
 
     # #Load networkInput
     # with open("./networkInput/Hnetwork.txt", 'r') as f:
