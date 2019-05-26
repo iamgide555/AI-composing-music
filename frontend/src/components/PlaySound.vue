@@ -39,13 +39,14 @@ export default {
     methods: {
         pollData () {
             this.check = 0
-            if(this.check < this.duration){
-                this.polling = setInterval(() => {
-                    console.log("Hi")
-                    this.check = this.check + 1
-                    console.log(this.check)
-                }, 1000)
-            }
+            this.polling = setInterval(() => {
+                if(this.check == this.duration){
+                    return "done"
+                }
+                this.check = this.check + 1
+                console.log(this.check)
+            }, 1000)
+            console.log(this.polling)
         },
         reset() {
             this.message = []
@@ -77,7 +78,6 @@ export default {
                 })
         },
         playSong() {
-            this.pollData()
             const path = 'http://localhost:5000/playSong'
             const payload = {
                 fileName: this.path
@@ -91,6 +91,7 @@ export default {
                 .catch((error) => {
                     console.log(error)
                 })
+            this.pollData()
         },
     },
     computed: {
