@@ -1,23 +1,25 @@
 <template>
     <div>
         {{getComment}}
-        <button v-on:click=playSong>Play</button>
-        <button v-on:click=stopSong>Stop</button> <br>
-        <progress class="progress is-small" v-bind:value="check" v-bind:max="duration"></progress>
-        <b-field label="Comment">
-            <b-input maxlength="200" type="textarea" size="is-small" v-model="message"></b-input>
-        </b-field>
-        <br>
-        <section>
-            <a class="button is-success" v-on:click="submit">Submit</a>
-            <a class="button is-danger" v-on:click="reset">Reset</a>
-        </section>
-        <br>
-        <section>
-            <b-message v-for="x in comment" v-bind:title="x['username']">
-                {{x['comment']}}
-            </b-message>
-        </section>
+        <div class="container">
+            <button class="button-1" v-on:click=playSong>Play</button>
+            <button class="button-1" v-on:click=stopSong>Stop</button> 
+            <progress class="progress is-small" v-bind:value="check" v-bind:max="duration"></progress>
+            <b-field label="Comment">
+                <b-input maxlength="200" type="textarea" size="is-small" v-model="message"></b-input>
+            </b-field>
+            <br>
+            <section>
+                <a class="button is-success" v-on:click="submit">Submit</a>
+                <a class="button is-danger" v-on:click="reset">Reset</a>
+            </section>
+            <br>
+            <section>
+                <b-message v-for=" x in comment" v-bind:title="x['username']">
+                    {{x['comment']}}
+                </b-message>
+            </section>
+        </div>
     </div>
 </template>
 
@@ -115,24 +117,21 @@ export default {
 }
 </script>
 <style>
-.button1 {
-  border: 0;
-  background: transparent;
-  box-sizing: border-box;
-  width: 0;
-  height: 74px;
-  border-color: transparent transparent transparent #202020;
-  transition: 100ms all ease;
-  cursor: pointer;
-  border-style: solid;
-  border-width: 37px 0 37px 60px;
+.container {
+    position: relative;
+    margin : 20px;
+    width: 1200px;
 }
-.button.paused {
-  border-style: double;
-  border-width: 0px 0 0px 60px;
+.button-1 {
+  background-color: rgb(91, 43, 119);
+  color: white;
+  padding: 10px 20px;
+  margin: 15px 5px;
+  text-align: center;
+  display: inline-block;
+  font-size: 16px;
 }
-.button:hover {
-  border-color: transparent transparent transparent #404040;
+.button-1:hover {
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
 }
-
 </style>
