@@ -3,7 +3,6 @@
         {{getComment}}
         <button v-on:click=playSong>Play</button>
         <button v-on:click=stopSong>Stop</button> <br>
-        <button class='button1'></button>
         <progress class="progress is-small" v-bind:value="check" v-bind:max="duration"></progress>
         <b-field label="Comment">
             <b-input maxlength="200" type="textarea" size="is-small" v-model="message"></b-input>
@@ -17,7 +16,6 @@
         {{check}}
         <br>
         Comment: {{comment}}
-
     </div>
 </template>
 
@@ -31,7 +29,7 @@ export default {
             path: this.$store.state.path,
             duration: this.$store.state.duration,
             check: 0,
-            comment:[],
+            comment: [],
             message:'',
             polling:null,
         }
@@ -54,10 +52,13 @@ export default {
         submit() {
             const path = 'http://localhost:5000/addComment'
             const payload = {
-                username: this.$store.state.user.username,
-                songName: this.$store.state.file_name,
-                comment: this.message
+                songName:this.$store.state.file_name,
+                data:[{
+                    username: this.$store.state.user.username,
+                    comment: this.message
+                }]
             }
+            console.log(payload) 
             axios.post(path,payload)
                 .then((res)=>{
                     console.log("Comment submitted")
@@ -96,13 +97,15 @@ export default {
     },
     computed: {
         getComment() {
+            console.log("YoYo")
             const path = 'http://localhost:5000/getComment'
             axios.get(path)
                 .then((res) =>{
                     for(var x in res.data){
-                        console.log(x)
+                        if(res.data[x]['songName'] == this.$store.state.file_name){
+                            this.comment = res.data[x]['data']
+                        }
                     }
-                    this.comment = res.data
                 })
                 .catch((error) => {
                     console.log(error)

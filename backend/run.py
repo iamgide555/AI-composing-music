@@ -66,8 +66,8 @@ def loadModel_jsonNote():
     print("Happy Model Mode")
     Smodel = load_model('./Model_moods/model_sad_more_padding_1.h5',custom_objects={'perplexity': perplexity})
     print("Sad Model Done")
-    #Rmodel = load_model('./Model_moods/model_relax_more_padding_1.h5',custom_objects={'perplexity': perplexity})
-    #print("Relax Model Done")
+    Rmodel = load_model('./Model_moods/model_relax_more_padding_1.h5',custom_objects={'perplexity': perplexity})
+    print("Relax Model Done")
     
     #Load Note
     with open("./NoteData/happy_dict_morePedding.json") as f:
@@ -470,11 +470,17 @@ def getComment():
 @app.route('/addComment', methods = ['POST','GET'])
 def addComment():
     if request.method == 'POST':
+        check = 0
         post_data = request.get_json()
         with open('./data/comment.json') as json_file:  
             data = json.load(json_file)
         json_file.close()
-        data.append(post_data)
+        for x in range(len(data)):
+            if (data[x]['songName'] == post_data['songName']):
+                data[x]['data'].append(post_data['data'][0])
+                check = 1
+        if(check == 0):
+            data.append(post_data)
         with open('./data/comment.json', 'w') as outfile:  
             json.dump(data, outfile)
         outfile.close()
