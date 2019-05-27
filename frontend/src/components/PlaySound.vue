@@ -94,8 +94,6 @@ export default {
                 })
             this.pollData()
         },
-    },
-    computed: {
         getComment() {
             console.log("YoYo")
             const path = 'http://localhost:5000/getComment'
@@ -111,6 +109,9 @@ export default {
                     console.log(error)
                 })
         }
+    },
+    mounted() {
+        this.getComment()
     }
 }
 </script>
