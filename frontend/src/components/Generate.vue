@@ -180,11 +180,14 @@ export default {
                     var file = res.data.split(" ")
                     file.push(this.duration)
                     this.$store.commit('getFilename',file)
+                    // {"ID_song": "2", "username": "lnw", "nameSong": "testOutput2", "mood": "Relax", "path": "../frontend/static/fileSong/testOutput2.mid", "duration": "20"}
                     var songData = {
                         ID_song: file[1],
-                        ID_user: this.$store.state.user.id_user.toString(),
+                        username: this.$store.state.user.username,
                         nameSong: file[2],
                         mood: this.mood,
+                        path: this.$store.state.path,
+                        duration: this.duration,
                     }
                     this.saveSongData(songData)
                     this.$router.push('/PlaySound')

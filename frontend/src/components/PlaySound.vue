@@ -1,9 +1,8 @@
 <template>
     <div>
-        {{getComment}}
         <div class="container">
             <button class="button-1" v-on:click=playSong>Play</button>
-            <button class="button-1" v-on:click=stopSong>Stop</button> 
+            <button class="button-1" v-on:click=stopSong>Stop</button>
             <progress class="progress is-small" v-bind:value="check" v-bind:max="duration"></progress>
             <b-field label="Comment">
                 <b-input maxlength="200" type="textarea" size="is-small" v-model="message"></b-input>
@@ -15,7 +14,7 @@
             </section>
             <br>
             <section>
-                <b-message v-for=" x in comment" v-bind:title="x['username']">
+                <b-message v-for="x in comment" v-bind:title="x['username']">
                     {{x['comment']}}
                 </b-message>
             </section>
@@ -71,6 +70,7 @@ export default {
                 .catch((error)=>{
                     console.log(error)
                 })
+            this.message = ''
         },
         stopSong() {
             const path = 'http://localhost:5000/stopSong'

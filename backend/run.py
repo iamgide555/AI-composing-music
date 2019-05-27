@@ -82,41 +82,6 @@ def loadModel_jsonNote():
         relaxJson = json.load(f)
     Rdict = getDict(relaxJson)
     f.close()
-
-    # #Load networkInput
-    # with open("./networkInput/Hnetwork.txt", 'r') as f:
-    #     data = f.read()
-    # f.close
-    # data1 = data.split("|")
-    # Hnetwork = []
-    # for x in range(len(data1)-2):
-    #     test = data1[x].split(",")
-    #     z = []
-    #     for y in test:
-    #         z.append(y)
-    #     Hnetwork.append(z)
-    # with open("./networkInput/Snetwork.txt", 'r') as f:
-    #     data = f.read()
-    # f.close
-    # data1 = data.split("|")
-    # Snetwork = []
-    # for x in range(len(data1)-2):
-    #     test = data1[x].split(",")
-    #     z = []
-    #     for y in test:
-    #         z.append(y)
-    #     Snetwork.append(z)
-    # with open("./networkInput/Rnetwork.txt", 'r') as f:
-    #     data = f.read()
-    # f.close
-    # data1 = data.split("|")
-    # Rnetwork = []
-    # for x in range(len(data1)-2):
-    #     test = data1[x].split(",")
-    #     z = []
-    #     for y in test:
-    #         z.append(y)
-    #     Rnetwork.append(z)
         
     return Hmodel, Smodel, Rmodel, Hdict, Sdict, Rdict
 
@@ -472,6 +437,7 @@ def addComment():
     if request.method == 'POST':
         check = 0
         post_data = request.get_json()
+        print(post_data)
         with open('./data/comment.json') as json_file:  
             data = json.load(json_file)
         json_file.close()
