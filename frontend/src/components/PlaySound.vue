@@ -13,6 +13,8 @@
                 <a class="button is-danger" v-on:click="reset">Reset</a>
             </section>
             <br>
+                {{duration}}
+            <br>
             <section>
                 <b-message v-for="x in comment" v-bind:title="x['username']">
                     {{x['comment']}}
@@ -73,6 +75,7 @@ export default {
             this.message = ''
         },
         stopSong() {
+            this.polling = 0
             const path = 'http://localhost:5000/stopSong'
             axios.post(path)
                 .then((res) =>{
