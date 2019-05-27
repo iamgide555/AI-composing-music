@@ -78,10 +78,10 @@ def loadModel_jsonNote():
         sadJson = json.load(f)
     Sdict = getDict(sadJson)
     f.close()
-    #with open("./NoteData/relax_dict_morePedding.json") as f:
-     #   relaxJson = json.load(f)
-    #Rdict = getDict(relaxJson)
-    #f.close()
+    with open("./NoteData/relax_dict_morePedding.json") as f:
+        relaxJson = json.load(f)
+    Rdict = getDict(relaxJson)
+    f.close()
 
     # #Load networkInput
     # with open("./networkInput/Hnetwork.txt", 'r') as f:
