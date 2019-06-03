@@ -16,7 +16,7 @@
                 {{duration}}
             <br>
             <section>
-                <b-message v-for="x in comment" v-bind:title="x['username']">
+                <b-message v-for="(x, index) in comment" v-bind:title="x['username']" :key="index">
                     {{x['comment']}}
                 </b-message>
             </section>

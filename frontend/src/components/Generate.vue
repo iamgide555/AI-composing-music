@@ -178,7 +178,7 @@ export default {
                     this.loadingPage = false
                     // this.fileName = res.data
                     var file = res.data.split(" ")
-                    file.push(this.duration)
+                    file.push(this.songDuration)
                     this.$store.commit('getFilename',file)
                     // {"ID_song": "2", "username": "lnw", "nameSong": "testOutput2", "mood": "Relax", "path": "../frontend/static/fileSong/testOutput2.mid", "duration": "20"}
                     var songData = {

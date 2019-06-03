@@ -20,7 +20,10 @@
                   <a>Login</a>
                 </router-link>
               </li>
-              <ul v-if="user">Welcome {{this.$store.state.user.username}} </ul>
+              <!-- <ul v-if="user">Welcome {{this.$store.state.user.username}} </ul> -->
+                <li @click="gen" v-if="user">
+                  <a>Generate</a>
+                </li>
                 <li @click="list" v-if="user">
                   <a>List</a>
                 </li>
@@ -45,6 +48,9 @@ export default {
     }
   },
   methods: {
+    gen() {
+      this.$router.push('/generate')
+    },
     list() {
       this.$router.push('/list')
     },
